@@ -1,4 +1,7 @@
 from flask import Flask, render_template
+import sass
+
+sass.compile(dirname=('static/styles/sass', 'static/styles'), output_style='compressed')
 
 app = Flask(__name__)
 
