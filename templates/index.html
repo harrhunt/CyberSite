@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/index.css') }}">
+{% endblock %}
+{% block content %}
+    <div class="banner">
+        <div class="welcome-statement">Welcome</div>
+        <div class="search-container">
+            <label for="search"></label><input type="search" id="search"
+                                               placeholder="Search by author, title, tag, keyword...">
+        </div>
+    </div>
+{% endblock %}
