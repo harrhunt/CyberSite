@@ -1,17 +1,15 @@
 # Entities
 
 ## Knowledge Area
-knowledge_areas
+areas
 - id
 - name
 - relationship(knowledge_units)
 
 ## Knowledge Unit
-knowledge_units
+units
 - id
 - name
-- relationship(knowledge_topics)
-- relationship(knowledge_areas)
 
 ## Module
 modules
@@ -21,8 +19,10 @@ modules
 - date_added
 - description
 - notes
-- relationship(knowledge_units/topics)
+- relationship(knowledge_units)
+- relationship(keywords)
 - relationship(files)
+- relationship(urls)
 
 ## File
 files
@@ -30,3 +30,7 @@ files
 - name
 - date_added
 
+## Source
+sources
+- id
+- url
