@@ -1,7 +1,8 @@
 from datetime import date, datetime
 
 from flask import Flask, render_template
-from flask_sqlalchemy import SQLAlchemy
+from flask_mongoalchemy import MongoAlchemy
+from mongoalchemy.fields import StringField, IntField, DateTimeField, DocumentField, ListField, ObjectIdField
 import sass
 from credentials import *
 
@@ -9,53 +10,55 @@ sass.compile(dirname=('static/styles/sass', 'static/styles'), output_style='comp
 
 
 class ConfigClass(object):
-    SQLALCHEMY_DATABASE_URI = DATABASE_URI
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
+    MONGOALCHEMY_DATABASE = 'iicl'
 
 
 app = Flask(__name__)
 app.secret_key = APP_SECRET_KEY
 app.config.from_object(f"{__name__}.ConfigClass")
 
-db = SQLAlchemy(app)
+db = MongoAlchemy(app)
 
 
-class Area(db.Model):
-    __tablename__ = 'areas'
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(100))
+class Area(db.Document):
+    config_collection_name = 'areas'
+    name = StringField()
+    units = ListField(DocumentField('Unit'))
 
 
-class Unit(db.Model):
-    __tablename__ = 'units'
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(100))
+class Unit(db.Document):
+    config_collection_name = 'units'
+    name = StringField()
+    area_id = ObjectIdField()
 
 
-class Keyword(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(100))
+class Keyword(db.Document):
+    config_collection_name = 'keywords'
+    name = StringField()
 
 
-class Module(db.Model):
-    __tablename__ = 'keywords'
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(100))
-    author = db.Column(db.String(100))
-    date_added = db.Column(db.Date, default=date.today())
-    description = db.Column(db.String(8192))
-    notes = db.Column(db.String(8192))
+class Module(db.Document):
+    config_collection_name = 'modules'
+    name = StringField()
+    author = StringField()
+    date_added = DateTimeField()
+    description = StringField()
+    notes = StringField()
+    units = ListField(DocumentField('Unit'))
+    files = ListField(DocumentField('File'))
+    sources = ListField(DocumentField('Source'))
+    keywords = ListField(DocumentField('Keyword'))
 
 
-class File(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(200), unique=True)
-    date_added = db.Column(db.Date, default=date.today())
+class File(db.Document):
+    config_collection_name = 'files'
+    name = StringField()
+    date_added = DateTimeField()
 
 
-class Source(db.Model):
-    id = db.Column(db.Integer(), primary_key=True)
-    url = db.Column(db.String(300), unique=True)
+class Source(db.Document):
+    config_collection_name = 'sources'
+    url = StringField()
 
 
 @app.route('/')
