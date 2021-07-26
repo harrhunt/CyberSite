@@ -5,10 +5,15 @@
 {% endblock %}
 {% block content %}
     <div class="banner">
-        <div class="welcome-statement">Welcome</div>
-        <div class="search-container">
-            <label for="search"></label><input type="search" id="search"
-                                               placeholder="Search by author, title, tag, keyword...">
-        </div>
+        <div class="welcome-statement">Welcome to the ISU Cybersecurity Library</div>
+        <div class="slogan">Effective cybersecurity curriculum at your fingertips</div>
     </div>
+    <form class="search-container">
+        <label for="search"></label><input type="search" id="search"
+                                           placeholder="Search by author, title, tag, keyword...">
+        <div class="search-controls-container">
+            <a class="lnk-browse-all" href="#">Browse All...</a>
+            <button class="btn-search" type="submit">Search</button>
+        </div>
+    </form>
 {% endblock %}
