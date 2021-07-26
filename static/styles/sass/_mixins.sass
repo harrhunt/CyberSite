@@ -1,0 +1,17 @@
+@use "sass:math"
+
+@mixin btn($color, $size, $size-type:1rem)
+  cursor: pointer
+  margin: ($size / 3 * $size-type)
+  padding: ($size / 3 * $size-type)
+  font-size: $size * $size-type
+  background: $color
+  @if lightness($color) > 40%
+    color: #000
+  @else
+    color: #fff
+  border-radius: 5px
+  border: 0 solid transparent
+  transition: background 0.5s ease
+  &:hover
+    background: darken($color, 15%)
