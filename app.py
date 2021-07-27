@@ -3,19 +3,13 @@ from datetime import date, datetime
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 import sass
-from credentials import *
+from flaskconf import SELECTED_CONFIG
 
 sass.compile(dirname=('static/styles/sass', 'static/styles'), output_style='compressed')
 
 
-class ConfigClass(object):
-    SQLALCHEMY_DATABASE_URI = DATABASE_URI
-    SQLALCHEMY_TRACK_MODIFICATIONS = False
-
-
 app = Flask(__name__)
-app.secret_key = APP_SECRET_KEY
-app.config.from_object(f"{__name__}.ConfigClass")
+app.config.from_object(SELECTED_CONFIG)
 
 db = SQLAlchemy(app)
 
