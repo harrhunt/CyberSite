@@ -1,5 +1,6 @@
 @import variables
 @import mixins
+@import placeholders
 
 .banner
   width: 100%
@@ -10,10 +11,6 @@
   justify-content: center
   align-content: center
   flex-wrap: wrap
-
-%flex-full-row
-  width: 100%
-  margin: 5px 0
 
 .welcome-statement
   @extend %flex-full-row
@@ -49,8 +46,29 @@
   text-decoration: none
   font-size: 0.8rem
   color: $growling-gray
+
   &:hover
     color: darken($growling-gray, 10%)
 
 .btn-search
   @include btn($secondary-color, 1.2)
+
+.isu-logo
+  @extend %center-text-block
+  width: 50%
+  @include margin-top-bottom(100px, 65px)
+
+.about-container
+  width: 100%
+
+.about-title
+  @extend %center-text-block
+  font-size: 2rem
+  font-weight: bold
+  width: 25%
+  @include margin-top-bottom(10px, 10px)
+
+.about
+  @extend %center-text-block
+  text-align: justify
+  width: 60%
