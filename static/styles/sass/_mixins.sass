@@ -1,5 +1,15 @@
 @use "sass:math"
 
+@mixin flex-box($justify, $align, $wrap:wrap)
+  display: flex
+  justify-content: $justify
+  align-content: $align
+  flex-wrap: $wrap
+
+@mixin margin-top-bottom($top, $bot)
+  margin-top: $top
+  margin-bottom: $bot
+
 @mixin btn($color, $size, $size-type:1rem)
   text-align: center
   cursor: pointer
