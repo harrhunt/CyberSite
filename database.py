@@ -1,6 +1,7 @@
 from flask_sqlalchemy import Model
 from sqlalchemy.types import Integer, String, Date
 from sqlalchemy import Column
+from datetime import date, datetime
 
 
 class Area(Model):
