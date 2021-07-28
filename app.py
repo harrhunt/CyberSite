@@ -1,5 +1,3 @@
-from datetime import date, datetime
-
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from database import *
