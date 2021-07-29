@@ -1,3 +1,5 @@
+@import variables
+
 @use "sass:math"
 
 @mixin flex-box($justify, $align, $wrap:wrap)
@@ -18,9 +20,9 @@
   font-size: $size * $size-type
   background: $color
   @if lightness($color) > 40%
-    color: #000
+    color: $black
   @else
-    color: #fff
+    color: $white
   border-radius: 5px
   border: 0 solid transparent
   transition: background 0.5s ease
