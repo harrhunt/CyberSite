@@ -7,17 +7,17 @@
     <div class="banner">
         <div class="welcome-statement">Welcome to the ISU Industrial Cybersecurity Library</div>
         <div class="slogan">Effective cybersecurity curriculum at your fingertips</div>
+
     </div>
-    <form class="search-container">
-        <label for="search"></label><input type="search" id="search"
+    <form class="search-container" action="/modules" method="GET" autocomplete="off">
+        <label for="search"></label><input type="search" id="search" name="search"
                                            placeholder="Search by author, title, tag, keyword...">
         <div class="search-controls-container">
             <a class="lnk-browse-all" href="#">Browse All...</a>
             <button class="btn-search" type="submit">Search</button>
         </div>
     </form>
-    <img class="isu-logo" alt="Idaho State University Logo"
-         src="{{ url_for('static', filename='images/ISU-stacked.svg') }}">
+
     <div class="about-container">
         <div class="about-title">About</div>
         <div class="about">
