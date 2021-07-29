@@ -6,11 +6,11 @@ Faker.seed(0)
 
 
 def fill_with_fake():
-    random_areas(7)
+    random_areas(14)
     random_keywords(400)
-    random_files(25)
-    random_urls(40)
-    random_modules(10)
+    random_files(100)
+    random_urls(120)
+    random_modules(100)
 
 
 def random_modules(n):
@@ -19,13 +19,20 @@ def random_modules(n):
     files = File.query.all()
     links = Link.query.all()
     for i in range(n):
+        new_module = Module(name=fake.catch_phrase(), author=fake.name(), description=fake.paragraph(nb_sentences=4))
+        db.session.add(new_module)
+        db.session.commit()
+    modules = Module.query.all()
+    for module in modules:
         chosen_units = list(set([fake.random_element(units) for j in range(fake.random_int(min=1, max=2))]))
-        chosen_keywords = list(set([fake.random_element(keywords) for j in range(fake.random_int(min=2, max=6))]))
+        chosen_keywords = list(set([fake.random_element(keywords) for j in range(fake.random_int(min=2, max=4))]))
         chosen_files = list(set([fake.random_element(files) for j in range(fake.random_int(min=1, max=3))]))
         chosen_links = list(set([fake.random_element(links) for j in range(fake.random_int(min=2, max=5))]))
-        new_module = Module(name=fake.catch_phrase(), author=fake.name(), description=fake.paragraph(nb_sentences=4), units=chosen_units, keywords=chosen_keywords, files=chosen_files, links=chosen_links)
-        db.session.add(new_module)
-    db.session.commit()
+        module.units = chosen_units
+        module.keywords = chosen_keywords
+        module.files = chosen_files
+        module.links = chosen_links
+        db.session.commit()
 
 
 def random_areas(n):
@@ -38,8 +45,11 @@ def random_areas(n):
 
 def random_files(n):
     for i in range(n):
-        new_file = File(name=fake.file_name())
-        db.session.add(new_file)
+        files = [file.name for file in File.query.all()]
+        name = fake.file_name()
+        if name not in files:
+            new_file = File(name=name)
+            db.session.add(new_file)
     db.session.commit()
 
 
@@ -48,7 +58,7 @@ def random_keywords(n):
         keywords = [keyword.name for keyword in Keyword.query.all()]
         name = fake.word()
         if name not in keywords:
-            new_keyword = Keyword(name=name, acronym=''.join(fake.random_letters(length=3)).upper())
+            new_keyword = Keyword(name=name, acronym=''.join(fake.random_letters(length=3)).upper() if fake.random_int(min=0, max=1) else '')
             db.session.add(new_keyword)
     db.session.commit()
 
