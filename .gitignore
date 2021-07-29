@@ -181,3 +181,4 @@ flaskconf.py
 
 # Folder for excluding files I don't wan't pushed up, but I don't want to throw away yet
 /gitexclude
+static/styles/css

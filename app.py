@@ -5,7 +5,7 @@ import sass
 import re
 from flaskconf import SELECTED_CONFIG
 
-sass.compile(dirname=('static/styles/sass', 'static/styles'), output_style='compressed')
+sass.compile(dirname=('static/styles/sass', 'static/styles/css'), output_style='compressed')
 
 app = Flask(__name__)
 app.config.from_object(SELECTED_CONFIG)
