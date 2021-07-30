@@ -74,12 +74,8 @@ def random_urls(n):
 
 
 def clear_database():
-    db.session.query(Area).delete()
-    db.session.query(Unit).delete()
-    db.session.query(Module).delete()
-    db.session.query(Keyword).delete()
-    db.session.query(File).delete()
-    db.session.query(Link).delete()
+    db.drop_all()
+    db.create_all()
 
 
 if __name__ == '__main__':
