@@ -47,7 +47,7 @@ body, html
   border: 2px solid $black
   border-radius: 10px
   padding: 4px 6px
-  transition: background 0.5s ease
+  @include transition(background 0.5s ease, color 0.5s ease)
   @include flex-box(center, center)
 
   &:hover
