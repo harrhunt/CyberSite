@@ -37,6 +37,7 @@ class Module(db.Model):
     name = db.Column(db.String(100), unique=True)
     author = db.Column(db.String(100))
     date_added = db.Column(db.Date, default=date.today())
+    date_updated = db.Column(db.Date)
     description = db.Column(db.String(8192))
     notes = db.Column(db.String(8192))
     units = db.relationship('Unit', backref='modules', secondary='module_units')
@@ -94,25 +95,89 @@ def index():
     return render_template("index.html")
 
 
+@app.route('/module/<module_id>')
+def module(module_id):
+    selected_module = Module.query.filter(Module.id == module_id).first()
+    if selected_module:
+        return render_template("module.html", module=selected_module)
+
+
 @app.route('/modules')
 def modules():
     search_term = request.args.get('search')
-    all_modules = Module.query.all()
+    area_term = request.args.get('area')
+    unit_term = request.args.get('unit')
+    keyword_term = request.args.get('keyword')
+    modules_left = Module.query.all()
+    if area_term and area_term != '':
+        modules_left = find_by_area(area_term, modules_left)
+    if unit_term and unit_term != '':
+        modules_left = find_by_unit(unit_term, modules_left)
+    if keyword_term and keyword_term != '':
+        modules_left = find_by_keyword(keyword_term, modules_left)
     if search_term and search_term != '':
-        search = re.compile(f"\\b{search_term}\\b", re.IGNORECASE)
-        queried_modules = []
-        for module in all_modules:
-            print(len(module.keywords))
-            if search.search(module.name) or search.search(module.author):
-                queried_modules.append(module)
-            else:
-                for keyword in module.keywords:
-                    if search.search(keyword.name) or search.search(keyword.acronym):
-                        queried_modules.append(module)
-                        break
-    else:
-        queried_modules = all_modules
-    return render_template("modules.html", modules=queried_modules)
+        modules_left = find_by_search(search_term, modules_left)
+    return render_template("modules.html", modules=modules_left)
+
+
+def find_by_keyword(keyword_term, to_search):
+    queried_modules = []
+    for this_module in to_search:
+        for keyword in this_module.keywords:
+            if keyword.name == keyword_term:
+                queried_modules.append(this_module)
+    return queried_modules
+
+
+def find_by_unit(unit_term, to_search):
+    queried_modules = []
+    for this_module in to_search:
+        for unit in this_module.units:
+            if unit.name == unit_term:
+                queried_modules.append(this_module)
+    return queried_modules
+
+
+def find_by_area(area_term, to_search):
+    queried_modules = []
+    for this_module in to_search:
+        for unit in this_module.units:
+            for area in unit.areas:
+                if area.name == area_term:
+                    queried_modules.append(this_module)
+    return queried_modules
+
+
+def find_by_search(search_term, to_search):
+    search = re.compile(f"\\b{search_term}\\b", re.IGNORECASE)
+    queried_modules = []
+    for this_module in to_search:
+        print(len(this_module.keywords))
+        if search.search(this_module.name) or search.search(this_module.author):
+            queried_modules.append(this_module)
+        else:
+            found = False
+            for keyword in this_module.keywords:
+                if search.search(keyword.name) or search.search(keyword.acronym):
+                    queried_modules.append(this_module)
+                    found = True
+                    break
+            if found:
+                continue
+            for unit in this_module.units:
+                if found:
+                    break
+                if search.search(unit.name):
+                    queried_modules.append(this_module)
+                    found = True
+                    break
+                else:
+                    for area in unit.areas:
+                        if search.search(area.name):
+                            queried_modules.append(this_module)
+                            found = True
+                            break
+    return queried_modules
 
 
 if __name__ == '__main__':
