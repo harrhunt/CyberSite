@@ -2,6 +2,12 @@
 
 @use "sass:math"
 
+@mixin transition($transitions...)
+  -webkit-transition: $transitions
+  -moz-transition: $transitions
+  -o-transition: $transitions
+  transition: $transitions
+
 @mixin flex-box($justify, $align, $wrap:wrap)
   display: flex
   justify-content: $justify
@@ -25,6 +31,6 @@
     color: $white
   border-radius: 5px
   border: 0 solid transparent
-  transition: background 0.5s ease
+  @include transition(background 0.5s ease)
   &:hover
     background: darken($color, 15%)
