@@ -10,16 +10,25 @@ $module-height: 12.5rem
   margin: 50px auto
 
 .module
+  @extend %no-select
+  cursor: pointer
   @include flex-box(flex-start, center)
   width: 100%
   height: $module-height
   margin: 25px auto
   box-shadow: 1px 1px 4px adjust-color($dark-gray, $alpha: -0.33)
   border-radius: 5px
-  transition: all 0.25s ease
+  @include transition(box-shadow 0.25s ease, transform 0.25s ease)
+  pointer-events: auto
+
   &:hover
-      box-shadow: 3px 3px 10px adjust-color($dark-gray, $alpha: -0.33) //adjust-color(darken($primary-color, 10%), $alpha: -0.33)
-      transform: scale(1.01, 1.01)
+    box-shadow: 3px 3px 10px adjust-color($dark-gray, $alpha: -0.33)
+    transform: scale(1.01, 1.01)
+
+  &:active
+    box-shadow: 1px 1px 0 0 adjust-color($dark-gray, $alpha: -0.33)
+    transform: scale(0.99, 0.99)
+
 
 .area-container
   @include flex-box(center, center)
@@ -31,18 +40,25 @@ $module-height: 12.5rem
   border-radius: 5px 0 0 5px
 
 .area
-  background: #ffffffdd
+  background: adjust-color($white, $alpha: -0.33)
   width: 100%
   text-align: center
   font-size: 1.2rem
   font-weight: bold
+  pointer-events: auto
+
+  &:hover
+    background: $white
 
 .info-container
   @include flex-box(flex-start, space-evenly)
   width: calc(100% - #{$module-height})
   padding: 10px 25px
   font-size: 0.7rem
-  //border: 2px solid $growling-gray
+//border: 2px solid $growling-gray
+
+.area-container, .info-container
+  pointer-events: none
 
 .title, .author, .unit-container, .keyword-date-container
   width: 100%
@@ -76,9 +92,19 @@ $module-height: 12.5rem
   padding: 2px 6px
   border-radius: 5px
   font-weight: bold
+  pointer-events: auto
+
+.keyword-name, .keyword-acronym
+  pointer-events: none
 
 .unit
   background: $primary-color
 
+  &:hover
+    background: darken($primary-color, 10%)
+
 .keyword
   background: $secondary-color
+
+  &:hover
+    background: darken($secondary-color, 10%)
