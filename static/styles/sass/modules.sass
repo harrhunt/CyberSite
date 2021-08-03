@@ -4,7 +4,7 @@
 
 $module-height: 12.5rem
 
-.modules-container
+.module-container
   @include flex-box(center, center)
   width: 60%
   margin: 50px auto
@@ -16,18 +16,15 @@ $module-height: 12.5rem
   width: 100%
   height: $module-height
   margin: 25px auto
-  box-shadow: 1px 1px 4px adjust-color($dark-gray, $alpha: -0.33)
-  border-radius: 5px
+  @extend %card
   @include transition(box-shadow 0.25s ease, transform 0.25s ease)
   pointer-events: auto
 
   &:hover
-    box-shadow: 3px 3px 10px adjust-color($dark-gray, $alpha: -0.33)
-    transform: scale(1.01, 1.01)
+    @extend %card-hover
 
   &:active
-    box-shadow: 1px 1px 0 0 adjust-color($dark-gray, $alpha: -0.33)
-    transform: scale(0.99, 0.99)
+    @extend %card-active
 
 
 .area-container
@@ -67,16 +64,8 @@ $module-height: 12.5rem
   font-size: 1rem
   font-weight: bold
 
-.unit-container
-  @include flex-box(flex-start, center)
-
-.keyword-date-container, .keyword-container
+.keyword-date-container
   @include flex-box(space-between, center)
-
-.keyword, .unit
-  display: inline-block
-  margin: 2px 5px
-  padding: 2px
 
 .author, .description, .date-added
   color: $dark-gray
@@ -87,24 +76,3 @@ $module-height: 12.5rem
   overflow: hidden
   -ms-text-overflow: ellipsis
   text-overflow: ellipsis
-
-.unit, .keyword
-  padding: 2px 6px
-  border-radius: 5px
-  font-weight: bold
-  pointer-events: auto
-
-.keyword-name, .keyword-acronym
-  pointer-events: none
-
-.unit
-  background: $primary-color
-
-  &:hover
-    background: darken($primary-color, 10%)
-
-.keyword
-  background: $secondary-color
-
-  &:hover
-    background: darken($secondary-color, 10%)
