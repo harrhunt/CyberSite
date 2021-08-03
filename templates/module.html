@@ -1,44 +1,100 @@
-{% extends "base.html" %}
+{% extends "module_base.html" %}
 {% block styles %}
     {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/modules.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/module.css') }}">
 {% endblock %}
 {% block content %}
     <div class="module-container">
         <div class="module">
-            <div class="area-container">
-                <div class="area">{{ module.units[0].areas[0].name }}</div>
+            <div class="title">{{ module.name }}</div>
+            <div class="author">- {{ module.author }}</div>
+            <div class="date-added">Last
+                Updated: {{ module.date_updated if module.date_updated else module.date_added }}</div>
+            <div class="description-title">Description</div>
+            <div class="description">{{ module.description }}</div>
+            <div class="materials">
+                <div class="file-container">
+                    <div class="file-title">Files</div>
+                    {% for file in module.files %}
+                        <div class="file">
+                            <div class="name">{{ file.name }}</div>
+                            <div class="date-added">{{ file.date_added }}</div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="link-container">
+                    <div class="link-title">Links</div>
+                    {% for link in module.links %}
+                        <div class="link">
+                            <div class="url"><a target="_blank" href="{{ link.url }}">{{ link.url }}</a></div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="notes-container">
+                    <div class="notes-title">Notes</div>
+                    <div class="notes">{{ module.notes if module.notes else '' }}</div>
+                </div>
             </div>
-            <div class="info-container">
-                <div class="title">{{ module.name }}</div>
-                <div class="author">- {{ module.author }}</div>
+        </div>
+        <div class="tag-feedback-container">
+            <div class="tag-container">
+                <div class="area">{{ module.units[0].areas[0].name }}</div>
+                <div class="unit-title">Units</div>
                 <div class="unit-container">
                     {% for unit in module.units %}
                         <div class="unit">{{ unit.name }}</div>
                     {% endfor %}
                 </div>
-                <div class="description">{{ module.description }}</div>
-                <div class="keyword-date-container">
-                    <div class="keyword-container">
-                        {% for keyword in module.keywords %}
-                            <div class="keyword"><span class="keyword-name">{{ keyword.name }}</span>{% if keyword.acronym != '' %} <span class="keyword-acronym">({{ keyword.acronym }})</span>{% endif %}</div>
-                        {% endfor %}
-                    </div>
-                    <div class="date-added">{{ module.date_added }}</div>
-
+                <div class="keyword-title">Keywords</div>
+                <div class="keyword-container">
+                    {% for keyword in module.keywords %}
+                        <div class="keyword"><span class="keyword-name">{{ keyword.name }}</span>
+                            {% if keyword.acronym != '' %}
+                                <span class="keyword-acronym"> ({{ keyword.acronym }})</span>{% endif %}</div>
+                    {% endfor %}
                 </div>
+            </div>
+            <div class="feedback-container">
+                <div class="feedback">Found and issue or want to share your thoughts?</div>
+                <div class="btn-feedback">Submit Feedback</div>
             </div>
         </div>
     </div>
+    <div class="feedback-instructions-overlay">
+        <div class="feedback-instructions-container">
+            <div class="btn-close-feedback-instructions">X</div>
+            <div class="feedback-instructions-title">Got some feedback?</div>
+            <div class="feedback-instructions">
+                <p>Comments on content, presentations, accessibility, etc. are welcomed and encouraged!</p>
+                <h1>Submission Instructions</h1>
+                <ul>
+                    <li>Email <a href="mailto:harrhunt@isu.edu?subject={{ module.name }}">&lt;email&gt;</a> and include
+                        the following in the subject line:
+                        <ul>
+                            <li>Module name</li>
+                            <li>File name (if applicable)</li>
+                        </ul>
+                    </li>
+                    <li>In the body, provide your feedback on this module
+                        <ul>
+                            <li>When referring to a file, please specify where your feedback is referring to (e.g. video
+                                timestamp, slide number, page number, etc.)
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        let overlay = $(".feedback-instructions-overlay");
+        $(".btn-feedback").on("click", function (e) {
+            overlay.show();
+        });
+        $(".btn-close-feedback-instructions, .feedback-instructions-overlay").on("click", function (e) {
+            if (e.target === e.currentTarget) {
+                overlay.hide();
+            }
+        });
+    </script>
 {% endblock %}
-{#                {% for file in module.files %}#}
-{#                    <div class="file">#}
-{#                        <div class="name">{{ file.name }}</div>#}
-{#                        <div class="date-added">{{ file.date_added }}</div>#}
-{#                    </div>#}
-{#                {% endfor %}#}
-{#                {% for link in module.links %}#}
-{#                    <div class="link">#}
-{#                        <div class="url">{{ link.name }}</div>#}
-{#                    </div>#}
-{#                {% endfor %}#}
