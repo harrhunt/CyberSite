@@ -8,8 +8,10 @@
 body, html
   margin: 0
   padding: 0
-  font-size: 20px
+  font-size: 18px
   font-family: $font-stack
+  color: $almost-black
+  background: $dark-white
   -webkit-box-sizing: border-box !important
   -moz-box-sizing: border-box !important
   box-sizing: border-box !important
@@ -26,14 +28,19 @@ body, html
   box-shadow: 0 2px 8px adjust-color($dark-gray, $alpha: -0.33)
 
   a
+    @include flex-box(center, center)
     text-decoration: none
-    color: $black
+    color: $almost-black
     font-size: 1.5rem
     margin: 10px 25px
     font-weight: bold
 
 .links
+  height: 100%
   @include flex-box(center, center)
+
+.iicl-logo
+  width: 75px
 
 .isu-logo-container
   margin: 0
@@ -44,12 +51,18 @@ body, html
 
 #contribute
   font-size: 1.2rem
-  border: 2px solid $black
+  border: 2px solid $almost-black
   border-radius: 10px
   padding: 4px 6px
   @include transition(background 0.5s ease, color 0.5s ease)
   @include flex-box(center, center)
 
   &:hover
-    background: $black
+    background: $almost-black
     color: $white
+
+.footer
+  //margin-top: 150px
+  width: 100%
+  background: $dark-gray
+  height: 10vh
