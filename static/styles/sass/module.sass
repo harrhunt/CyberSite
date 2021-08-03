@@ -1,0 +1,157 @@
+@import mixins
+@import variables
+@import placeholders
+
+$outer-margin: 100px
+$card-padding: 50px
+
+//*
+//  border: 1px solid black
+
+.module-container
+  width: 100%
+  @include flex-box(space-between, flex-start)
+
+.module
+  width: 45%
+  margin: $outer-margin 0 0 $outer-margin
+
+.tag-feedback-container
+  width: 25%
+  margin: $outer-margin $outer-margin 0 0
+
+.title
+  font-size: 2.8rem
+  font-weight: bold
+
+.author, .date-added
+  margin-left: 15px
+
+.author
+  font-size: 1.2rem
+  color: $dark-gray
+
+.date-added
+  font-size: 1rem
+  color: $almost-black
+
+.description-title
+  font-size: 1.5rem
+  font-weight: bold
+  margin-top: 25px
+
+.materials
+  @extend %card
+  margin: $outer-margin 0
+  padding: $card-padding
+
+.file-title, .link-title, .notes-title
+  font-size: 1.5rem
+  font-weight: bold
+  border-bottom: 2px solid $dark-gray
+  margin-top: 20px
+
+.tag-container
+  padding: $card-padding * 0.6
+  margin-bottom: $outer-margin
+  @extend %no-select
+  @extend %card
+
+.area
+  font-size: 2rem
+  font-weight: bold
+  width: 80%
+  text-align: center
+  cursor: pointer
+  margin: 0 auto 10px auto
+  border-radius: 5px
+  @include transition(background 0.5s ease, color 0.5s ease)
+
+  &::after
+    content: ''
+    width: 100%
+    height: 4px
+    background: $almost-black
+    display: block
+    margin: 0 auto
+    border-radius: 2px
+    @include transition(background 0.5s ease)
+
+
+  &:hover
+    color: $almost-black
+    background: $dark-white
+
+  &:hover::after
+    background: transparent
+
+.unit-title, .keyword-title
+  font-size: 1.5rem
+  font-weight: bold
+  margin: 20px 0 10px 0
+
+
+.feedback-container
+  padding: $card-padding * 0.6
+  margin: $outer-margin 0
+  @extend %card
+  @include flex-box(center, center)
+
+.feedback
+  font-size: 1.2rem
+  text-align: center
+
+.btn-feedback
+  font-size: 1.5rem
+  font-weight: bold
+  padding: 15px
+  margin-top: 25px
+  background: $almost-black
+  color: $white
+  border-radius: 5px
+  cursor: pointer
+  @include transition(background 0.5s ease)
+
+  &:hover
+    background: lighten($almost-black, 20%)
+
+.feedback-instructions-overlay
+  z-index: 999
+  position: fixed
+  top: 0
+  left: 0
+  display: none
+  width: 100%
+  height: 100%
+  background: adjust-color($dark-gray, $alpha: -0.33)
+
+.btn-close-feedback-instructions
+  @include flex-box(center, center)
+  @extend %no-select
+  font-size: 1.1rem
+  cursor: pointer
+  position: absolute
+  top: 0
+  right: 0
+  width: 30px
+  height: 30px
+  background: #db272a
+  color: $white
+  font-weight: bold
+  border-radius: 5px
+
+  &:hover
+    background: darken(#db272a, 15%)
+
+.feedback-instructions-container
+  @include center-non-flex(fixed)
+  background: $white
+  width: 40%
+  height: 60%
+  padding: $card-padding
+  border-radius: 10px
+  pointer-events: auto
+
+.feedback-instructions-title
+  font-size: 2.2rem
+  text-align: center
