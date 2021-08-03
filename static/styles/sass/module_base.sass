@@ -1,0 +1,28 @@
+@import variables
+@import mixins
+
+.unit-container, .keyword-container
+  @include flex-box(flex-start, center)
+
+.unit, .keyword
+  padding: 2px 6px
+  border-radius: 5px
+  font-weight: bold
+  pointer-events: auto
+  margin: 10px 8px
+  cursor: pointer
+
+.keyword-name, .keyword-acronym
+  pointer-events: none
+
+.unit
+  background: $primary-color
+
+  &:hover
+    background: darken($primary-color, 10%)
+
+.keyword
+  background: $secondary-color
+
+  &:hover
+    background: darken($secondary-color, 10%)
