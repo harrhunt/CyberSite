@@ -1,3 +1,5 @@
+@import variables
+
 %flex-full-row
   width: 100%
   margin: 5px 0
@@ -13,3 +15,16 @@
   -moz-user-select: none
   -ms-user-select: none
   user-select: none
+
+%card
+  background: $white
+  box-shadow: 1px 1px 4px adjust-color($dark-gray, $alpha: -0.33)
+  border-radius: 5px
+
+%card-hover
+  box-shadow: 3px 3px 10px adjust-color($dark-gray, $alpha: -0.33)
+  transform: scale(1.01, 1.01)
+
+%card-active
+  box-shadow: 1px 1px 0 0 adjust-color($dark-gray, $alpha: -0.33)
+  transform: scale(0.99, 0.99)
