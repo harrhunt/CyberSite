@@ -2,6 +2,12 @@
 
 @use "sass:math"
 
+@mixin center-non-flex($position)
+  position: $position
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+
 @mixin transition($transitions...)
   -webkit-transition: $transitions
   -moz-transition: $transitions
