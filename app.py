@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, render_template_string, request
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date, datetime
 import sass
@@ -63,6 +63,19 @@ class Keyword(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(100), unique=True)
     acronym = db.Column(db.String(30))
+    sources = db.relationship('Source', backref='keywords', secondary='keyword_sources')
+
+
+class KeywordSource(db.Model):
+    __tablename__ = 'keyword_sources'
+    keyword_id = db.Column(db.Integer(), db.ForeignKey('keywords.id', ondelete='CASCADE'), primary_key=True)
+    source_id = db.Column(db.Integer(), db.ForeignKey('sources.id', ondelete='CASCADE'), primary_key=True)
+
+
+class Source(db.Model):
+    __tablename__ = 'sources'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(100), unique=True)
 
 
 class ModuleFile(db.Model):
@@ -100,6 +113,8 @@ def module(module_id):
     selected_module = Module.query.filter(Module.id == module_id).first()
     if selected_module:
         return render_template("module.html", module=selected_module)
+    else:
+        return render_template_string("<h1>Module with id {{ module_id }} does not exist</h1>", module_id=module_id)
 
 
 @app.route('/modules')
@@ -109,6 +124,8 @@ def modules():
     unit_term = request.args.get('unit')
     keyword_term = request.args.get('keyword')
     modules_left = Module.query.all()
+    if not modules_left:
+        return render_template("modules.html")
     if area_term and area_term != '':
         modules_left = find_by_area(area_term, modules_left)
     if unit_term and unit_term != '':
