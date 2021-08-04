@@ -45,7 +45,7 @@ def load_keywords():
 
 
 def random_modules(n):
-    units = Unit.query.all()
+    areas = Area.query.all()
     keywords = Keyword.query.all()
     files = File.query.all()
     links = Link.query.all()
@@ -55,7 +55,8 @@ def random_modules(n):
         db.session.commit()
     modules = Module.query.all()
     for module in modules:
-        chosen_units = list(set([fake.random_element(units) for j in range(fake.random_int(min=1, max=2))]))
+        chosen_area = fake.random_element(areas)
+        chosen_units = list(set([fake.random_element(chosen_area.units) for j in range(fake.random_int(min=1, max=2))]))
         chosen_keywords = list(set([fake.random_element(keywords) for j in range(fake.random_int(min=2, max=4))]))
         chosen_files = list(set([fake.random_element(files) for j in range(fake.random_int(min=1, max=3))]))
         chosen_links = list(set([fake.random_element(links) for j in range(fake.random_int(min=2, max=5))]))
