@@ -1,4 +1,9 @@
 {% extends "module_base.html" %}
+{% block meta %}
+    {{ super() }}
+    <meta name="description"
+          content="A module of educational information titled {{ module.name }} authored by {{ module.author }}">
+{% endblock %}
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/module.css') }}">

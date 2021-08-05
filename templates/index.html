@@ -1,4 +1,10 @@
 {% extends "base.html" %}
+{% block meta %}
+    {{ super() }}
+    <meta name="description"
+          content="Home page for the ISU Industrial Cyber Security Library filled with information on
+                   learning topics related to industrial cyber security">
+{% endblock %}
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/index.css') }}">

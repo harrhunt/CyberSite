@@ -1,4 +1,9 @@
 {% extends "module_base.html" %}
+{% block meta %}
+    {{ super() }}
+    <meta name="description"
+          content="Modules in the ISU Industrial Cyber Security Library based on search results if there are any">
+{% endblock %}
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/modules.css') }}">
@@ -33,14 +38,3 @@
         {% endfor %}
     </div>
 {% endblock %}
-{#                {% for file in module.files %}#}
-{#                    <div class="file">#}
-{#                        <div class="name">{{ file.name }}</div>#}
-{#                        <div class="date-added">{{ file.date_added }}</div>#}
-{#                    </div>#}
-{#                {% endfor %}#}
-{#                {% for link in module.links %}#}
-{#                    <div class="link">#}
-{#                        <div class="url">{{ link.name }}</div>#}
-{#                    </div>#}
-{#                {% endfor %}#}
