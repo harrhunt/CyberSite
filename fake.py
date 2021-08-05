@@ -1,6 +1,7 @@
 from faker import Faker
 from app import db, Area, Unit, Module, Keyword, File, Link, Source
 import json
+from datetime import date, datetime
 
 fake = Faker()
 Faker.seed(0)
@@ -50,7 +51,7 @@ def random_modules(n):
     files = File.query.all()
     links = Link.query.all()
     for i in range(n):
-        new_module = Module(name=fake.catch_phrase(), author=fake.name(), description=fake.paragraph(nb_sentences=4))
+        new_module = Module(name=fake.catch_phrase(), author=fake.name(), description=fake.paragraph(nb_sentences=4), date_added=fake.date_between_dates(date.fromisoformat('2018-01-01'), date.today()))
         db.session.add(new_module)
         db.session.commit()
     modules = Module.query.all()
