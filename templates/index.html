@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/index.css') }}">
 {% endblock %}
 {% block content %}
-    <div class="banner">
+    <header class="banner">
         <div class="welcome-statement">Welcome to the ISU Industrial Cybersecurity Library</div>
         <div class="slogan">Effective cybersecurity curriculum at your fingertips</div>
 
-    </div>
-    <div class="home-content-container">
+    </header>
+    <main class="home-content-container">
         <form class="search-container" action="/modules" method="GET" autocomplete="off">
             <label for="search"></label><input type="search" id="search" name="search"
                                                placeholder="Search by author, title, keyword...">
@@ -47,5 +47,5 @@
                     himenaeos. Aliquam ultricies elementum eros.</p>
             </div>
         </div>
-    </div>
+    </main>
 {% endblock %}

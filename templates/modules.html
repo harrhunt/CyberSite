@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/modules.css') }}">
 {% endblock %}
 {% block content %}
-    <div class="module-container">
+    <main class="module-container">
         {% for module in modules %}
             <div class="module" data-id="{{ module.id }}">
                 <div class="area-container">
@@ -36,5 +36,5 @@
                 </div>
             </div>
         {% endfor %}
-    </div>
+    </main>
 {% endblock %}

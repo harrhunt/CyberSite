@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/module.css') }}">
 {% endblock %}
 {% block content %}
-    <div class="module-container">
+    <main class="module-container">
         <div class="module">
             <div class="title">{{ module.name }}</div>
             <div class="author">- {{ module.author }}</div>
@@ -64,8 +64,8 @@
                 <div class="btn-feedback">Submit Feedback</div>
             </div>
         </div>
-    </div>
-    <div class="feedback-instructions-overlay">
+    </main>
+    <section class="feedback-instructions-overlay">
         <div class="feedback-instructions-container">
             <div class="btn-close-feedback-instructions">X</div>
             <div class="feedback-instructions-title">Got some feedback?</div>
@@ -90,7 +90,7 @@
                 </ul>
             </div>
         </div>
-    </div>
+    </section>
     <script>
         let overlay = $(".feedback-instructions-overlay");
         $(".btn-feedback").on("click", function (e) {
