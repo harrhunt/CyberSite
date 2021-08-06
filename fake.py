@@ -1,7 +1,8 @@
-from faker import Faker
-from app import db, Area, Unit, Module, Keyword, File, Link, Source
-import json
+from app import app, db, Area, Unit, Module, Keyword, File, Link, Source
 from datetime import date, datetime
+from faker import Faker
+import json
+import os
 
 fake = Faker()
 Faker.seed(0)
@@ -78,12 +79,13 @@ def random_areas(n):
 
 def random_files(n):
     for i in range(n):
-        files = [file.name for file in File.query.all()]
-        name = fake.file_name()
-        if name not in files:
-            new_file = File(name=name)
-            db.session.add(new_file)
+        new_file = File(name=fake.file_name())
+        db.session.add(new_file)
     db.session.commit()
+    files = File.query.all()
+    for file in files:
+        with open(os.path.join(app.config["UPLOAD_PATH"], str(file.id)), "wb") as file_out:
+            file_out.write(os.urandom(1024))
 
 
 def random_keywords(n):
