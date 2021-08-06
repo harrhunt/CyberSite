@@ -20,10 +20,10 @@
             <div class="materials">
                 <div class="file-container">
                     <div class="file-title">Files</div>
+                    <div class="download-all"><a href="/download_all/{{ module.id }}">Download All</a></div>
                     {% for file in module.files %}
                         <div class="file">
                             <div class="name"><a href="/download/{{ file.id }}">{{ file.name }}</a></div>
-                            <div class="date-added">{{ file.date_added }}</div>
                         </div>
                     {% endfor %}
                 </div>
