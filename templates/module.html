@@ -22,7 +22,7 @@
                     <div class="file-title">Files</div>
                     {% for file in module.files %}
                         <div class="file">
-                            <div class="name">{{ file.name }}</div>
+                            <div class="name"><a href="/download/{{ file.id }}">{{ file.name }}</a></div>
                             <div class="date-added">{{ file.date_added }}</div>
                         </div>
                     {% endfor %}
