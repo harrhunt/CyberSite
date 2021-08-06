@@ -1,8 +1,10 @@
-from flask import Flask, render_template, render_template_string, request
+from flask import Flask, render_template, render_template_string, request, abort, send_from_directory
+from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date, datetime
 import sass
 import re
+import os
 from flaskconf import SELECTED_CONFIG
 
 sass.compile(dirname=('static/styles/sass', 'static/styles/css'), output_style='compressed')
@@ -87,7 +89,7 @@ class ModuleFile(db.Model):
 class File(db.Model):
     __tablename__ = 'files'
     id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(200), unique=True)
+    name = db.Column(db.String(200))
     date_added = db.Column(db.Date, default=date.today())
 
 
@@ -135,6 +137,44 @@ def modules():
     if search_term and search_term != '':
         modules_left = find_by_search(search_term, modules_left)
     return render_template("modules.html", modules=modules_left)
+
+
+@app.route('/contribute')
+def contribute():
+    return render_template("contribute.html")
+
+
+@app.route('/upload', methods=['POST'])
+def upload():
+    uploaded_files = request.files.getlist('file')
+    to_save = []
+    for file in uploaded_files:
+        filename = secure_filename(file.filename)
+        if filename != '':
+            ext = os.path.splitext(filename)[1]
+            if not len(app.config["EXTENSIONS_WHITELIST"]):
+                if ext in app.config["EXTENSIONS_BLACKLIST"]:
+                    return 'This type of file is  not allowed', 400
+            else:
+                if ext not in app.config["EXTENSIONS_WHITELIST"]:
+                    return 'This type of file is  not allowed', 400
+            new_file = File(name=filename)
+            db.session.add(new_file)
+            to_save.append((file, new_file))
+        else:
+            return '', 204
+    db.session.commit()
+    for file in to_save:
+        file[0].save(os.path.join(app.config["UPLOAD_PATH"], str(file[1].id)))
+    return '', 200
+
+
+@app.route('/download/<file_id>')
+def download(file_id):
+    file_to_download = File.query.filter(File.id == file_id).first()
+    if not file_to_download:
+        abort(404)
+    return send_from_directory(app.config["UPLOAD_PATH"], str(file_to_download.id), as_attachment=True, download_name=file_to_download.name)
 
 
 def find_by_keyword(keyword_term, to_search):
