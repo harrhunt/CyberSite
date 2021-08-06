@@ -1,10 +1,12 @@
-from flask import Flask, render_template, render_template_string, request, abort, send_from_directory
+from flask import Flask, render_template, render_template_string, request, abort, send_from_directory, send_file
 from werkzeug.utils import secure_filename
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date, datetime
+from zipfile import ZipFile, ZIP_DEFLATED
 import sass
 import re
 import os
+import io
 from flaskconf import SELECTED_CONFIG
 
 sass.compile(dirname=('static/styles/sass', 'static/styles/css'), output_style='compressed')
@@ -175,6 +177,21 @@ def download(file_id):
     if not file_to_download:
         abort(404)
     return send_from_directory(app.config["UPLOAD_PATH"], str(file_to_download.id), as_attachment=True, download_name=file_to_download.name)
+
+
+@app.route('/download_all/<module_id>')
+def download_all(module_id):
+    module_to_zip = Module.query.filter(Module.id == module_id).first()
+    if not module_to_zip:
+        abort(404)
+    files_to_zip = module_to_zip.files
+    zip_bytes = io.BytesIO()
+    with ZipFile(zip_bytes, "a", ZIP_DEFLATED, True) as zip_file:
+        for file in files_to_zip:
+            with open(os.path.join(app.config["UPLOAD_PATH"], str(file.id)), 'rb') as fp:
+                zip_file.writestr(file.name, fp.read())
+    zip_bytes.seek(0)
+    return send_file(zip_bytes, as_attachment=True, download_name=f"{module_to_zip.name.replace(' ', '_')}.zip")
 
 
 def find_by_keyword(keyword_term, to_search):
