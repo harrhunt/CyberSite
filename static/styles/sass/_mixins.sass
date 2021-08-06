@@ -14,10 +14,11 @@
   -o-transition: $transitions
   transition: $transitions
 
-@mixin flex-box($justify, $align, $wrap:wrap)
+@mixin flex-box($justify, $align, $items:initial, $wrap:wrap)
   display: flex
   justify-content: $justify
   align-content: $align
+  align-items: $items
   flex-wrap: $wrap
 
 @mixin margin-top-bottom($top, $bot)
