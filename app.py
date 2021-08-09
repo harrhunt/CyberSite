@@ -20,19 +20,18 @@ class Area(db.Model):
     __tablename__ = 'areas'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(100), unique=True)
-    units = db.relationship('Unit', backref='areas', secondary='area_units')
-
-
-class AreaUnit(db.Model):
-    __tablename__ = 'area_units'
-    area_id = db.Column(db.Integer(), db.ForeignKey('areas.id', ondelete='CASCADE'), primary_key=True)
-    unit_id = db.Column(db.Integer(), db.ForeignKey('units.id', ondelete='CASCADE'), primary_key=True)
+    units = db.relationship(
+        'Unit',
+        backref='area',
+        lazy='dynamic'
+    )
 
 
 class Unit(db.Model):
     __tablename__ = 'units'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(100), unique=True)
+    area_id = db.Column(db.Integer(), db.ForeignKey('areas.id', ondelete='CASCADE'))
 
 
 class Module(db.Model):
@@ -44,22 +43,59 @@ class Module(db.Model):
     date_updated = db.Column(db.Date)
     description = db.Column(db.String(8192))
     notes = db.Column(db.String(8192))
-    units = db.relationship('Unit', backref='modules', secondary='module_units')
-    keywords = db.relationship('Keyword', backref='modules', secondary='module_keywords')
-    files = db.relationship('File', backref='modules', secondary='module_files')
-    links = db.relationship('Link', backref='modules', secondary='module_links')
+    units = db.relationship(
+        'Unit',
+        backref=db.backref('modules', lazy='dynamic'),
+        secondary='module_units',
+        lazy='dynamic'
+    )
+    keywords = db.relationship(
+        'Keyword',
+        backref=db.backref('modules', lazy='dynamic'),
+        secondary='module_keywords',
+        lazy='dynamic'
+    )
+    files = db.relationship(
+        'File',
+        backref=db.backref('modules', lazy='dynamic'),
+        secondary='module_files',
+        lazy='dynamic'
+    )
+    links = db.relationship(
+        'Link',
+        backref=db.backref('modules', lazy='dynamic'),
+        secondary='module_links',
+        lazy='dynamic'
+    )
 
 
-class ModuleUnit(db.Model):
-    __tablename__ = 'module_units'
-    module_id = db.Column(db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'), primary_key=True)
-    unit_id = db.Column(db.Integer(), db.ForeignKey('units.id', ondelete='CASCADE'), primary_key=True)
+module_units = db.Table('module_units',
+                        db.Column('module_id', db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'),
+                                  primary_key=True),
+                        db.Column('unit_id', db.Integer(), db.ForeignKey('units.id', ondelete='CASCADE'),
+                                  primary_key=True)
+                        )
 
+module_keywords = db.Table('module_keywords',
+                           db.Column('module_id', db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'),
+                                     primary_key=True),
+                           db.Column('keyword_id', db.Integer(), db.ForeignKey('keywords.id', ondelete='CASCADE'),
+                                     primary_key=True)
+                           )
 
-class ModuleKeyword(db.Model):
-    __tablename__ = 'module_keywords'
-    module_id = db.Column(db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'), primary_key=True)
-    keyword_id = db.Column(db.Integer(), db.ForeignKey('keywords.id', ondelete='CASCADE'), primary_key=True)
+module_files = db.Table('module_files',
+                        db.Column('module_id', db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'),
+                                  primary_key=True),
+                        db.Column('file_id', db.Integer(), db.ForeignKey('files.id', ondelete='CASCADE'),
+                                  primary_key=True)
+                        )
+
+module_links = db.Table('module_links',
+                        db.Column('module_id', db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'),
+                                  primary_key=True),
+                        db.Column('link_id', db.Integer(), db.ForeignKey('links.id', ondelete='CASCADE'),
+                                  primary_key=True)
+                        )
 
 
 class Keyword(db.Model):
@@ -67,13 +103,20 @@ class Keyword(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(100), unique=True)
     acronym = db.Column(db.String(30))
-    sources = db.relationship('Source', backref='keywords', secondary='keyword_sources')
+    sources = db.relationship(
+        'Source',
+        backref=db.backref('keywords', lazy='dynamic'),
+        secondary='keyword_sources',
+        lazy='dynamic'
+    )
 
 
-class KeywordSource(db.Model):
-    __tablename__ = 'keyword_sources'
-    keyword_id = db.Column(db.Integer(), db.ForeignKey('keywords.id', ondelete='CASCADE'), primary_key=True)
-    source_id = db.Column(db.Integer(), db.ForeignKey('sources.id', ondelete='CASCADE'), primary_key=True)
+keyword_sources = db.Table('keyword_sources',
+                           db.Column('keyword_id', db.Integer(), db.ForeignKey('keywords.id', ondelete='CASCADE'),
+                                     primary_key=True),
+                           db.Column('source_id', db.Integer(), db.ForeignKey('sources.id', ondelete='CASCADE'),
+                                     primary_key=True)
+                           )
 
 
 class Source(db.Model):
@@ -82,23 +125,11 @@ class Source(db.Model):
     name = db.Column(db.String(100), unique=True)
 
 
-class ModuleFile(db.Model):
-    __tablename__ = 'module_files'
-    module_id = db.Column(db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'), primary_key=True)
-    file_id = db.Column(db.Integer(), db.ForeignKey('files.id', ondelete='CASCADE'), primary_key=True)
-
-
 class File(db.Model):
     __tablename__ = 'files'
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(200))
     date_added = db.Column(db.Date, default=date.today())
-
-
-class ModuleLink(db.Model):
-    __tablename__ = 'module_links'
-    module_id = db.Column(db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'), primary_key=True)
-    link_id = db.Column(db.Integer(), db.ForeignKey('links.id', ondelete='CASCADE'), primary_key=True)
 
 
 class Link(db.Model):
