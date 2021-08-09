@@ -1,4 +1,4 @@
-from app import app, db, Area, Unit, Module, Keyword, File, Link, Source
+from app import app, db, Area, Unit, Module, Keyword, File, Link, Source, load_areas, load_keywords
 from datetime import date, datetime
 from faker import Faker
 import json
@@ -13,37 +13,15 @@ def fill_with_fake(fake_auk=True):
         random_areas(14)
         random_keywords(400)
     else:
-        load_keywords()
-        load_areas()
+        areas = Area.query.all()
+        keywords = Keyword.query.all()
+        if not len(areas):
+            load_areas()
+        if not len(keywords):
+            load_keywords()
     random_files(100)
     random_urls(120)
     random_modules(100)
-
-
-def load_areas():
-    with open(".data/database/area_units_edited.json", "r") as file:
-        areas = json.load(file)
-    for area in areas:
-        units = [Unit(name=unit) for unit in areas[area]]
-        new_area = Area(name=area, units=units)
-        db.session.add(new_area)
-    db.session.commit()
-
-
-def load_keywords():
-    with open(".data/database/keywords_edited.json", "r") as file:
-        keywords = json.load(file)
-    sources = []
-    for keyword in keywords:
-        for source in keywords[keyword]["sources"]:
-            new_source = Source(name=source)
-            if source not in sources:
-                sources.append(source)
-                db.session.add(new_source)
-        sources_list = [Source.query.filter(Source.name == source).first() for source in keywords[keyword]["sources"]]
-        new_keyword = Keyword(name=keyword, acronym=keywords[keyword]["acronym"], sources=sources_list)
-        db.session.add(new_keyword)
-    db.session.commit()
 
 
 def random_modules(n):
