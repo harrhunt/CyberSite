@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import date, datetime
 from zipfile import ZipFile, ZIP_DEFLATED
+import json
 import sass
 import re
 import os
@@ -21,7 +22,37 @@ app.config.from_object(SELECTED_CONFIG)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-# login_manager.login_view = 'login'
+login_manager.login_view = 'login'
+
+
+@app.shell_context_processor
+def make_shell_context():
+    return {'db': db,
+            'User': User,
+            'Area': Area,
+            'Unit': Unit,
+            'Module': Module,
+            'Keyword': Keyword,
+            'Source': Source,
+            'File': File,
+            'Link': Link
+            }
+
+
+@app.cli.command('initdb')
+def initialize_database():
+    db.create_all()
+    admin = User.query.filter(User.username == 'admin').first()
+    areas = Area.query.all()
+    keywords = Keyword.query.all()
+    if not admin:
+        admin = User(username=app.config["ADMIN_USERNAME"], password=generate_password_hash(app.config["ADMIN_PASSWORD"]))
+        db.session.add(admin)
+        db.session.commit()
+    if not len(areas):
+        load_areas()
+    if not len(keywords):
+        load_keywords()
 
 
 class User(UserMixin, db.Model):
@@ -336,6 +367,32 @@ def find_by_search(search_term, to_search):
                             found = True
                             break
     return queried_modules
+
+
+def load_areas():
+    with open(".data/database/area_units_edited.json", "r") as file:
+        areas = json.load(file)
+    for area in areas:
+        units = [Unit(name=unit) for unit in areas[area]]
+        new_area = Area(name=area, units=units)
+        db.session.add(new_area)
+    db.session.commit()
+
+
+def load_keywords():
+    with open(".data/database/keywords_edited.json", "r") as file:
+        keywords = json.load(file)
+    sources = []
+    for keyword in keywords:
+        for source in keywords[keyword]["sources"]:
+            new_source = Source(name=source)
+            if source not in sources:
+                sources.append(source)
+                db.session.add(new_source)
+        sources_list = [Source.query.filter(Source.name == source).first() for source in keywords[keyword]["sources"]]
+        new_keyword = Keyword(name=keyword, acronym=keywords[keyword]["acronym"], sources=sources_list)
+        db.session.add(new_keyword)
+    db.session.commit()
 
 
 if __name__ == '__main__':
