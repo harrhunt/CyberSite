@@ -4,6 +4,26 @@
 
 $module-height: 12.5rem
 
+.sticky-search-container
+  position: sticky
+  width: 100%
+  height: 150px
+  top: 75px
+  margin: 0
+  padding: 10px
+  z-index: 10
+  background: $white
+  box-shadow: 0 8px 8px -6px adjust-color($dark-gray, $alpha: -0.33)
+
+.num-results
+  display: inline-block
+  color: $gray
+
+#search
+
+  &::selection, &::-moz-selection
+    background: $secondary-color
+
 .module-container
   @include flex-box(center, center)
   width: 60%
@@ -70,9 +90,15 @@ $module-height: 12.5rem
 .author, .description, .date-added
   color: $dark-gray
 
+.date-added
+  @include flex-box(center, center, center)
+
 .description
   width: 80%
   white-space: nowrap
   overflow: hidden
   -ms-text-overflow: ellipsis
   text-overflow: ellipsis
+
+.keyword-container
+  width: 80%
