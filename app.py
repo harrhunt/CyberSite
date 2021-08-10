@@ -6,11 +6,11 @@ from wtforms.validators import InputRequired, Email, Length
 from werkzeug.utils import secure_filename
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import or_
 from datetime import date, datetime
 from zipfile import ZipFile, ZIP_DEFLATED
 import json
 import sass
-import re
 import os
 import io
 from flaskconf import SELECTED_CONFIG
@@ -242,18 +242,29 @@ def modules():
     area_term = request.args.get('area')
     unit_term = request.args.get('unit')
     keyword_term = request.args.get('keyword')
-    modules_left = Module.query.all()
-    if not modules_left:
+    modules_query = Module.query
+    if not modules_query.all():
         return render_template("modules.html")
     if area_term and area_term != '':
-        modules_left = find_by_area(area_term, modules_left)
+        modules_query = modules_query.filter(Module.units.any(Unit.area.has(Area.name == area_term)))
     if unit_term and unit_term != '':
-        modules_left = find_by_unit(unit_term, modules_left)
+        modules_query = modules_query.filter(Module.units.any(Unit.name == unit_term))
     if keyword_term and keyword_term != '':
-        modules_left = find_by_keyword(keyword_term, modules_left)
+        modules_query = modules_query.filter(Module.keywords.any(Keyword.name == keyword_term))
     if search_term and search_term != '':
-        modules_left = find_by_search(search_term, modules_left)
-    return render_template("modules.html", modules=modules_left)
+        modules_query = Module.query.filter(or_(
+            Module.name.ilike(f'%{search_term}%'),
+            Module.units.any(or_(
+                Unit.name.ilike(f'%{search_term}%'),
+                Unit.area.has(Area.name.ilike(f'%{search_term}%'))
+            )),
+            Module.keywords.any(or_(
+                Keyword.name.ilike(f'%{search_term}%'),
+                Keyword.acronym.ilike(f'%{search_term}%')
+            )),
+            Module.author.ilike(f'%{search_term}%')
+        ))
+    return render_template("modules.html", modules=modules_query.all())
 
 
 @app.route('/contribute')
@@ -307,66 +318,6 @@ def download_all(module_id):
                 zip_file.writestr(file.name, fp.read())
     zip_bytes.seek(0)
     return send_file(zip_bytes, as_attachment=True, download_name=f"{module_to_zip.name.replace(' ', '_')}.zip")
-
-
-def find_by_keyword(keyword_term, to_search):
-    queried_modules = []
-    for this_module in to_search:
-        for keyword in this_module.keywords:
-            if keyword.name == keyword_term:
-                queried_modules.append(this_module)
-    return queried_modules
-
-
-def find_by_unit(unit_term, to_search):
-    queried_modules = []
-    for this_module in to_search:
-        for unit in this_module.units:
-            if unit.name == unit_term:
-                queried_modules.append(this_module)
-    return queried_modules
-
-
-def find_by_area(area_term, to_search):
-    queried_modules = []
-    for this_module in to_search:
-        for unit in this_module.units:
-            for area in unit.areas:
-                if area.name == area_term:
-                    queried_modules.append(this_module)
-    return queried_modules
-
-
-def find_by_search(search_term, to_search):
-    search = re.compile(f"\\b{search_term}\\b", re.IGNORECASE)
-    queried_modules = []
-    for this_module in to_search:
-        print(len(this_module.keywords))
-        if search.search(this_module.name) or search.search(this_module.author):
-            queried_modules.append(this_module)
-        else:
-            found = False
-            for keyword in this_module.keywords:
-                if search.search(keyword.name) or search.search(keyword.acronym):
-                    queried_modules.append(this_module)
-                    found = True
-                    break
-            if found:
-                continue
-            for unit in this_module.units:
-                if found:
-                    break
-                if search.search(unit.name):
-                    queried_modules.append(this_module)
-                    found = True
-                    break
-                else:
-                    for area in unit.areas:
-                        if search.search(area.name):
-                            queried_modules.append(this_module)
-                            found = True
-                            break
-    return queried_modules
 
 
 def load_areas():
