@@ -1,6 +1,7 @@
 from app import app, db, Area, Unit, Module, Keyword, File, Link, Source, load_areas, load_keywords
 from datetime import date, datetime
 from faker import Faker
+from sqlalchemy import null
 import json
 import os
 
@@ -30,7 +31,7 @@ def random_modules(n):
     files = File.query.all()
     links = Link.query.all()
     for i in range(n):
-        new_module = Module(name=fake.catch_phrase(), author=fake.name(), description=fake.paragraph(nb_sentences=4), date_added=fake.date_between_dates(date.fromisoformat('2018-01-01'), date.today()))
+        new_module = Module(name=fake.catch_phrase(), author=fake.name(), description=fake.paragraph(nb_sentences=4), date_added=fake.date_between_dates(date.fromisoformat('2018-01-01'), date.fromisoformat('2019-12-31')), date_updated=fake.date_between_dates(date.fromisoformat('2020-01-01'), date.today()) if fake.random_int(min=0, max=1) else null())
         db.session.add(new_module)
         db.session.commit()
     modules = Module.query.all()
