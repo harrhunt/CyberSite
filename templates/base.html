@@ -16,17 +16,18 @@
 </head>
 <body>
 <script>let FF_FOUC_FIX</script>
-{% block navbar %}
     <nav class="navbar">
-        <div class="links">
-            <a href="/"><img class="iicl-logo" alt="Idaho State University Logo"
-                                        src="{{ url_for('static', filename='images/I2CL_logo.png') }}"></a>
-        </div>
-        <a class="isu-logo-container" href="https://isu.edu/"><img class="isu-logo" alt="Idaho State University Logo"
-                                        src="{{ url_for('static', filename='images/ISU-stacked.svg') }}"></a>
-        <a id="contribute" href="#">Contribute</a>
+        {% block navbar %}
+            <div class="links">
+                <a href="/"><img class="iicl-logo" alt="Idaho State University Logo"
+                                 src="{{ url_for('static', filename='images/I2CL_logo.png') }}"></a>
+            </div>
+            <a class="isu-logo-container" href="https://isu.edu/"><img class="isu-logo"
+                                                                       alt="Idaho State University Logo"
+                                                                       src="{{ url_for('static', filename='images/ISU-stacked.svg') }}"></a>
+            <a id="contribute" href="#">Contribute</a>
+        {% endblock %}
     </nav>
-{% endblock %}
 {% block content %}
 
 {% endblock %}
