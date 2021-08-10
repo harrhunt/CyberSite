@@ -62,6 +62,30 @@ body, html
     background: $almost-black
     color: $white
 
+.search-container
+  width: 100%
+  margin: 15px auto
+  text-align: center
+  position: relative
+
+#search
+  width: 60%
+  font-size: 1.5rem
+  border-radius: 10px
+  outline: none
+  border: 2px solid $growling-gray-light
+  padding: 10px 50px
+  flex-basis: 100%
+
+.search-controls-container
+  position: absolute
+  right: 20%
+  text-align: right
+  width: 25%
+
+.btn-search
+  @include btn($secondary-color, 1.2)
+
 .footer
   //margin-top: 150px
   width: 100%
