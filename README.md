@@ -1,4 +1,4 @@
-# CyberSite
+# I2CL
 
 ---
 ## Installation Instructions
