@@ -2,7 +2,7 @@
 @import mixins
 @import variables
 
-$module-height: 12.5rem
+$module-height: 15rem
 
 .sticky-search-container
   position: sticky
@@ -54,7 +54,7 @@ $module-height: 12.5rem
   background-image: radial-gradient(circle, $roarange 0%, darken($roarange, 15%) 100%)
   //border: 2px solid $growling-gray
   border-right: 0 solid transparent
-  border-radius: 5px 0 0 5px
+  border-radius: 0 5px 5px 0
 
 .area
   background: adjust-color($white, $alpha: -0.33)
@@ -77,10 +77,14 @@ $module-height: 12.5rem
 .area-container, .info-container
   pointer-events: none
 
-.title, .author, .unit-container, .keyword-date-container
+.title, .author, .unit-container, .keyword-date-container, .unit-title, .keyword-title
   width: 100%
 
 .title
+  font-size: 1.5rem
+  font-weight: bold
+
+.unit-title, .keyword-title
   font-size: 1rem
   font-weight: bold
 
