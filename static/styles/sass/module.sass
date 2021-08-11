@@ -51,6 +51,61 @@ $card-padding: 50px
   border-bottom: 2px solid $dark-gray
   margin-top: 20px
 
+.download-all
+  @include flex-box(flex-end, center, center)
+  width: 100%
+  height: 3em
+  padding: 5px 10px
+  text-align: right
+
+  a
+    @include flex-box(space-between, center, center)
+    width: 165px
+    padding: 5px 10px
+    background: $primary-color
+    border-radius: 5px
+    color: $almost-black
+    text-decoration: none
+    @include transition(background 0.25s ease)
+
+  a:hover
+    background: darken($primary-color, 10%)
+
+
+.file
+  @include flex-box(space-between, center, center)
+  height: 3em
+  width: 100%
+  padding: 5px 10px
+
+  a
+    @include flex-box(space-between, center, center)
+    width: 135px
+    padding: 5px 10px
+    background: $secondary-color
+    border-radius: 5px
+    color: $almost-black
+    text-decoration: none
+    @include transition(background 0.25s ease)
+
+  a:hover
+    background: darken($secondary-color, 10%)
+
+  &:nth-child(even)
+    background: $dark-white
+
+.link
+  @include flex-box(flex-start, center, center)
+  height: 3em
+  width: 100%
+  padding: 5px 10px
+
+  a
+    color: darken($primary-color, 10%)
+
+  &:nth-child(even)
+    background: $dark-white
+
 .tag-container
   padding: $card-padding * 0.6
   margin-bottom: $outer-margin
