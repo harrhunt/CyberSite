@@ -33,7 +33,12 @@
 {% endblock %}
 <footer class="footer">
     {% block footer %}
-
+        <div class="footer-logo-container">
+            <img class="footer-logo" src="{{ url_for('static', filename='images/Bengal.svg') }}" alt="ISU Bengal Logo">
+        </div>
+        <div class="footer-links">
+            <a target="_blank" href="https://www.isu.edu/policy/">policies</a>
+        </div>
     {% endblock %}
 </footer>
 </body>
