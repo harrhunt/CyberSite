@@ -6,7 +6,7 @@
 2. Install the virtualenv package
     - `pip install virtualenv`
 3. Clone this repository
-    - `git clone git@github.com:harrhunt/CyberSite.git`
+    - `git clone git@github.com:harrhunt/I2CL.git`
 4. Create the virtual environment inside the cloned repository
     - `virtualenv env`
 
