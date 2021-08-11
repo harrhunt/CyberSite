@@ -2,26 +2,45 @@
 {% block meta %}
     {{ super() }}
     <meta name="description"
-          content="Home page for the ISU Industrial Cyber Security Library filled with information on
-                   learning topics related to industrial cyber security">
+          content="Page with instructions on how to contribute to this industrial cybersecurity repository">
 {% endblock %}
 {% block styles %}
     {{ super() }}
-    {#    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/contribute.css') }}">#}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/contribute.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/dropzone.min.css') }}">
 {% endblock %}
 {% block scripts %}
     <script src="{{ url_for('static', filename='scripts/dropzone.min.js') }}" type="text/javascript"></script>
 {% endblock %}
 {% block content %}
-    <header class="banner">
+    <header>
+        <div class="submission-title">Submission Instructions</div>
     </header>
-    <main class="home-content-container">
-        <form class="dropzone" action="/upload" method="POST" autocomplete="off">
-            <div class="fallback">
-                <input name="file" type="file" multiple>
+    <main>
+        <div class="submission-container">
+            <div class="submission-instructions">
+                <p>Welcome to the ISU Industrial Cybersecurity Library (I2CL). We appreciate you taking the time to
+                    create content and curriculum that will benefit cybersecurity students and faculty for years to
+                    come. Please follow the instructions below to create your video or presentation</p>
+                <ol>
+                    <li>If submitting a video, please view this example video first: <a href="#">Coming Soon</a></li>
+                    <li>Ensure the video or presentation includes an introduction (name, program you graduated from,
+                        current company employed at, job position, and the topic you are covering)
+                    </li>
+                    <li>Please keep all videos and/or presentations to between 5 and 30 minutes</li>
+                    <li>To submit your content, please visit the link below and fill out the attached form (a section is
+                        included for you to upload your files)
+                    </li>
+                </ol>
             </div>
-            <button class="btn-search" type="submit">Submit</button>
-        </form>
+            <div class="submit-container">
+                <p>Click here to submit your presentation or video</p>
+                <div class="btn-submit" onclick="location.href = '#'">Submit Content</div>
+            </div>
+            <div class="contact-container">
+                <p>If you are interested in contributing content or curriculum</p>
+                <a href="mailto:cybersecurityrepositoryadmin@isu.edu">cybersecurityrepositoryadmin@isu.edu</a>
+            </div>
+        </div>
     </main>
 {% endblock %}
