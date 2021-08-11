@@ -73,9 +73,16 @@ body, html
   font-size: 1.5rem
   border-radius: 10px
   outline: none
-  border: 2px solid $growling-gray-light
+  border: 2px solid $light-gray
   padding: 10px 50px
   flex-basis: 100%
+
+  &::placeholder
+    color: $light-gray
+    opacity: 1
+
+  &::-ms-input-placeholder
+    color: $light-gray
 
 .search-controls-container
   position: absolute
@@ -87,7 +94,21 @@ body, html
   @include btn($secondary-color, 1.2)
 
 .footer
-  //margin-top: 150px
+  @include flex-box(space-around, center, center)
   width: 100%
   background: $dark-gray
-  height: 10vh
+  height: 15vh
+  padding: 15px
+
+.footer-links
+
+  a
+    color: $dark-white
+    font-size: 0.8rem
+
+.footer-logo-container
+  @include flex-box(center, center, center)
+  width: 100%
+
+.footer-logo
+  width: 75px
