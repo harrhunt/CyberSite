@@ -20,25 +20,23 @@
             <div class="materials">
                 <div class="file-container">
                     <div class="file-title">Files</div>
-                    <div class="download-all"><a href="/download_all/{{ module.id }}">Download All</a></div>
                     {% for file in module.files %}
-                        <div class="file">
-                            <div class="name"><a href="/download/{{ file.id }}">{{ file.name }}</a></div>
-                        </div>
+                        <div class="file"><p>{{ file.name }}</p><a download href="/download/{{ file.id }}"><img src="{{ url_for('static', filename='images/download.svg') }}" alt="Download Icon"> Download</a></div>
                     {% endfor %}
+                    <div class="download-all"><a download href="/download_all/{{ module.id }}"><img src="{{ url_for('static', filename='images/download.svg') }}" alt="Download Icon"> Download All</a></div>
                 </div>
                 <div class="link-container">
                     <div class="link-title">Links</div>
                     {% for link in module.links %}
-                        <div class="link">
-                            <div class="url"><a target="_blank" href="{{ link.url }}">{{ link.url }}</a></div>
-                        </div>
+                        <div class="link"><a target="_blank" href="{{ link.url }}">{{ link.url }}</a></div>
                     {% endfor %}
                 </div>
-                <div class="notes-container">
-                    <div class="notes-title">Notes</div>
-                    <div class="notes">{{ module.notes if module.notes else '' }}</div>
-                </div>
+                {% if module.notes and module.notes != '' %}
+                    <div class="notes-container">
+                        <div class="notes-title">Notes</div>
+                        <div class="notes">{{ module.notes if module.notes else '' }}</div>
+                    </div>
+                {% endif %}
             </div>
         </div>
         <div class="tag-feedback-container">
@@ -73,7 +71,7 @@
                 <p>Comments on content, presentations, accessibility, etc. are welcomed and encouraged!</p>
                 <h1>Submission Instructions</h1>
                 <ul>
-                    <li>Email <a href="mailto:harrhunt@isu.edu?subject={{ module.name }}">&lt;email&gt;</a> and include
+                    <li>Email <a href="mailto:cybersecurityrepositoryadmin@isu.edu?subject={{ module.name }}">cybersecurityrepositoryadmin@isu.edu</a> and include
                         the following in the subject line:
                         <ul>
                             <li>Module name</li>
