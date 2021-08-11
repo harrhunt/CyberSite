@@ -71,11 +71,51 @@
     "Cyber Policy",
     "Privacy"
   ],
-  "Industrial Control Systems": [
-    "Instrumentation and Control",
-    "Industrial Devices",
-    "Industrial Communications",
-    "Diagram and Planning",
-    "Safety and Tools"
+  "Industrial Operations and Processes": [
+    "Industrial Sectors",
+    "Professional Roles and Responsibilities",
+    "Process Types",
+    "Plant Lifecycle"
+  ],
+  "Instrumentation and Control": [
+    "Sensing Elements/Transmitters/Transducers",
+    "Programmable Control Devices",
+    "Control Paradigms",
+    "SCADA Systems",
+    "Human Machine Interface",
+    "Alarms",
+    "Engineering Laptops and Workstations",
+    "Data Historians",
+    "Process Variables"
+  ],
+  "Industrial Devices": [
+    "Valves",
+    "Transformers",
+    "Breakers",
+    "Variable Frequency Drives",
+    "Motor Starters/Relays",
+    "Motors/Pumps/Fans"
+  ],
+  "Industrial Communications": [
+    "Analog Signals",
+    "Ethernet/IP",
+    "Fieldbus",
+    "Modbus",
+    "HART",
+    "Reference Architectures",
+    "Other Industrial Communications Protocols"
+  ],
+  "Diagram and Planning": [
+    "Piping and Instrumentation Diagrams",
+    "SAMA Diagrams",
+    "Electrical Circuits",
+    "61131-3 PLC Programming",
+    "Programming Methods"
+  ],
+  "Safety and Tools": [
+    "Calibration",
+    "Multimeters",
+    "Personal Protective Equipment",
+    "Safety/Hazards"
   ]
 }
