@@ -1,0 +1,58 @@
+@import variables
+@import mixins
+
+header, main
+  @include flex-box(center, center, center)
+  width: 100%
+
+.submission-title, .submission-instructions, .submit-container, .contact-container
+  border-radius: 10px
+  padding: 25px
+
+.submission-title
+  @include flex-box(center, center, center)
+  width: 80%
+  height: 3em
+  font-size: 2rem
+  font-weight: bold
+  background: $white
+  margin: 50px 0 15px 0
+
+.submission-container
+  @include flex-box(space-between, space-around, center)
+  width: 80%
+  height: 60vh
+  margin-bottom: 25px
+
+.submission-instructions, .submit-container, .contact-container
+  background: $white
+
+.submit-container, .contact-container
+  @include flex-box(center, flex-start, center)
+  width: 48%
+  height: 10em
+
+  p
+    text-align: center
+    font-size: 1.1rem
+    width: 100%
+
+.submission-instructions
+  min-height: 20em
+  padding: 25px 100px
+
+
+.btn-submit
+  width: 10em
+  font-size: 1.5rem
+  font-weight: bold
+  padding: 15px
+  background: $almost-black
+  color: $white
+  border-radius: 5px
+  cursor: pointer
+  text-align: center
+  @include transition(background 0.5s ease)
+
+  &:hover
+    background: lighten($almost-black, 20%)
