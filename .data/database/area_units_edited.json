@@ -1,0 +1,81 @@
+{
+  "Data Security": [
+    "Cryptography",
+    "Digital Forensics",
+    "Data Integrity and Authentication",
+    "Access Control",
+    "Secure Communication Protocols",
+    "Cryptanalysis",
+    "Data Privacy",
+    "Information Storage Security"
+  ],
+  "Software Security": [
+    "Fundamental Principles",
+    "Design",
+    "Implementation",
+    "Analysis and Testing",
+    "Deployment and Maintenance",
+    "Documentation",
+    "Ethics"
+  ],
+  "Component Security": [
+    "Component Design",
+    "Component Fabrication",
+    "Component Procurement",
+    "Component Testing",
+    "Component Reverse Engineering"
+  ],
+  "Connection Security": [
+    "Physical Media",
+    "Physical Interfaces and Connectors",
+    "Hardware Architecture",
+    "Distributed Systems Architecture",
+    "Network Architecture",
+    "Network Implementations",
+    "Network Services",
+    "Network Defense"
+  ],
+  "System Security": [
+    "System Thinking",
+    "System Management",
+    "System Access",
+    "System Control",
+    "System Retirement",
+    "System Testing",
+    "Example System Architectures"
+  ],
+  "Human Security": [
+    "Identity Management",
+    "Social Engineering",
+    "Personal Compliance with Cybersecurity Rules/Policy/Ethical Norms",
+    "Awareness and Understanding",
+    "Social and Behavioral Privacy",
+    "Personal Data Privacy and Security",
+    "Usable Security and Privacy"
+  ],
+  "Organizational Security": [
+    "Risk Management",
+    "Security Governance & Policy",
+    "Analytical Tools",
+    "Systems Administration",
+    "Cybersecurity Planning",
+    "Business Continuity, Disaster Recovery, and Incident Management",
+    "Security Program Management",
+    "Personnel Security",
+    "Security Operations"
+  ],
+  "Societal Security": [
+    "Cybercrime",
+    "Cyber Law",
+    "Cyber Ethics",
+    "Cyber Policy",
+    "Privacy"
+  ],
+  "Industrial Control Systems": [
+    "Instrumentation and Control",
+    "Industrial Devices",
+    "Industrial Communications",
+    "Diagram and Planning",
+    "Safety and Tools"
+  ]
+}

@@ -1,0 +1,108 @@
+@import placeholders
+@import mixins
+@import variables
+
+$module-height: 15rem
+
+.sticky-search-container
+  position: sticky
+  width: 100%
+  height: 150px
+  top: 75px
+  margin: 0
+  padding: 10px
+  z-index: 10
+  background: $white
+  box-shadow: 0 8px 8px -6px adjust-color($dark-gray, $alpha: -0.33)
+
+.num-results
+  display: inline-block
+  color: $gray
+
+#search
+
+  &::selection, &::-moz-selection
+    background: $secondary-color
+
+.module-container
+  @include flex-box(center, center)
+  width: 60%
+  margin: 50px auto
+
+.module
+  @extend %no-select
+  cursor: pointer
+  @include flex-box(flex-start, center)
+  width: 100%
+  height: $module-height
+  margin: 25px auto
+  @extend %card
+  @include transition(box-shadow 0.25s ease, transform 0.25s ease)
+  pointer-events: auto
+
+  &:hover
+    @extend %card-hover
+
+  &:active
+    @extend %card-active
+
+
+.area-container
+  @include flex-box(center, center)
+  width: $module-height
+  height: $module-height
+  background-image: radial-gradient(circle, $roarange 0%, darken($roarange, 15%) 100%)
+  //border: 2px solid $growling-gray
+  border-right: 0 solid transparent
+  border-radius: 0 5px 5px 0
+
+.area
+  background: adjust-color($white, $alpha: -0.33)
+  width: 100%
+  text-align: center
+  font-size: 1.2rem
+  font-weight: bold
+  pointer-events: auto
+
+  &:hover
+    background: $white
+
+.info-container
+  @include flex-box(flex-start, space-evenly)
+  width: calc(100% - #{$module-height})
+  padding: 10px 25px
+  font-size: 0.7rem
+//border: 2px solid $growling-gray
+
+.area-container, .info-container
+  pointer-events: none
+
+.title, .author, .unit-container, .keyword-date-container, .unit-title, .keyword-title
+  width: 100%
+
+.title
+  font-size: 1.5rem
+  font-weight: bold
+
+.unit-title, .keyword-title
+  font-size: 1rem
+  font-weight: bold
+
+.keyword-date-container
+  @include flex-box(space-between, center)
+
+.author, .description, .date-added
+  color: $dark-gray
+
+.date-added
+  @include flex-box(center, center, center)
+
+.description
+  width: 80%
+  white-space: nowrap
+  overflow: hidden
+  -ms-text-overflow: ellipsis
+  text-overflow: ellipsis
+
+.keyword-container
+  width: 80%

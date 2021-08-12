@@ -1,23 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    {% block meta %}
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% endblock %}
     {% block scripts %}
-
+        <script src="{{ url_for('static', filename='scripts/jquery-3.6.0.min.js') }}" type="text/javascript"></script>
+        <script src="{{ url_for('static', filename='scripts/base.js') }}" type="text/javascript"></script>
     {% endblock %}
     {% block styles %}
-        <link rel="stylesheet" href="{{ url_for('static', filename='styles/base.css') }}">
+        <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/base.css') }}">
     {% endblock %}
-    <title>{% block title %}CyberSite{% endblock %}</title>
+    <title>{% block title %}I²CL{% endblock %}</title>
 </head>
 <body>
-{% block navbar %}
-<div class="navbar">
-    <a href="/">CyberSite</a>
-</div>
-{% endblock %}
+<script>let FF_FOUC_FIX</script>
+    <nav class="navbar">
+        {% block navbar %}
+            <div class="links">
+                <a href="/"><img class="iicl-logo" alt="Idaho State University Logo"
+                                 src="{{ url_for('static', filename='images/I2CL_logo.png') }}"></a>
+            </div>
+            <a class="isu-logo-container" href="https://isu.edu/"><img class="isu-logo"
+                                                                       alt="Idaho State University Logo"
+                                                                       src="{{ url_for('static', filename='images/ISU-stacked.svg') }}"></a>
+            <a id="contribute" href="/contribute">Contribute</a>
+        {% endblock %}
+    </nav>
 {% block content %}
 
 {% endblock %}
+<footer class="footer">
+    {% block footer %}
+        <div class="footer-logo-container">
+            <img class="footer-logo" src="{{ url_for('static', filename='images/Bengal.svg') }}" alt="ISU Bengal Logo">
+        </div>
+        <div class="footer-links">
+            <a target="_blank" href="https://www.isu.edu/policy/">policies</a>
+        </div>
+    {% endblock %}
+</footer>
 </body>
 </html>

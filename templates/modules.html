@@ -1,0 +1,54 @@
+{% extends "module_base.html" %}
+{% block meta %}
+    {{ super() }}
+    <meta name="description"
+          content="Modules in the ISU Industrial Cyber Security Library based on search results if there are any">
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/modules.css') }}">
+{% endblock %}
+{% block content %}
+    <div class="sticky-search-container">
+        <form class="search-container" action="/modules" method="GET" autocomplete="off">
+            <label for="search"></label><input type="search" id="search" name="search"
+                                               placeholder="Search by author, title, keyword..."
+                                               value="{{ search if search else '' }}"
+                                               autofocus onfocus="this.select()">
+            <div class="search-controls-container">
+                <p class="num-results"># of results: {{ modules|length }}</p>
+                <button class="btn-search" type="submit">Search</button>
+            </div>
+        </form>
+    </div>
+    <main class="module-container">
+        {% for module in modules %}
+            <div class="module" data-id="{{ module.id }}">
+                <div class="info-container">
+                    <div class="title">{{ module.name }}</div>
+                    <div class="author">- {{ module.author }}</div>
+                    <div class="unit-title">Units</div>
+                    <div class="unit-container">
+                        {% for unit in module.units %}
+                            <div class="unit">{{ unit.name }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="description">{{ module.description }}</div>
+                    <div class="keyword-date-container">
+                        <div class="keyword-title">Keywords</div>
+                        <div class="keyword-container">
+                            {% for keyword in module.keywords %}
+                                <div class="keyword"><span class="keyword-name">{{ keyword.name }}</span>{% if keyword.acronym != '' %}<span class="keyword-acronym"> ({{ keyword.acronym }})</span>{% endif %}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="date-added">{{ module.date_updated if module.date_updated else module.date_added }}</div>
+
+                    </div>
+                </div>
+                <div class="area-container">
+                    <div class="area">{{ module.units[0].area.name }}</div>
+                </div>
+            </div>
+        {% endfor %}
+    </main>
+{% endblock %}

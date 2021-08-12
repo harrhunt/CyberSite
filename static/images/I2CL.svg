@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+     preserveAspectRatio="xMidYMid meet" viewBox="0 0 600 300" width="600" height="300">
+    <defs>
+        <path d="" id="hwwlH5Fey"/>
+        <path d="M0 56.25L65.63 56.25L65.63 243.75L0 243.75L0 300L187.5 300L187.5 243.75L121.88 243.75L121.88 56.25L187.5 56.25L187.5 0L0 0L0 56.25Z"
+              id="a15G7w8aJT"/>
+        <clipPath id="clipb7viKLKZm">
+            <use xlink:href="#a15G7w8aJT" opacity="1"/>
+        </clipPath>
+        <path d="M225 28.13C225 25.34 225 23.6 225 22.91C225 20.61 226.86 18.75 229.16 18.75C232.07 18.75 236.22 18.75 239.03 18.75C241.64 18.75 243.75 20.86 243.75 23.47C243.75 24.4 243.75 24.69 243.75 26.17C243.75 27.37 243.07 28.46 242.01 29C234.85 32.57 228.84 35.58 225.12 37.44C213.55 43.22 206.25 55.04 206.25 67.97C206.25 68.91 206.25 71.25 206.25 75L262.5 75L262.5 56.25C244.09 56.25 232.59 56.25 227.99 56.25C227.24 56.25 227.01 55.25 227.67 54.91C234.64 51.43 245.68 45.91 250.85 43.33C257.99 39.76 262.5 32.46 262.5 24.47C262.5 19.58 262.5 23.61 262.5 20.13C262.5 9.01 253.49 0 242.37 0C235.14 0 229.06 0 220.7 0C212.72 0 206.25 6.47 206.25 14.45C206.25 16.27 206.25 20.83 206.25 28.13L225 28.13Z"
+              id="c6uHK6ttw"/>
+        <path d="M271.88 300L393.75 300L393.75 243.75C333.82 243.75 296.37 243.75 281.39 243.75C270.96 243.75 262.5 235.29 262.5 224.86C262.5 209.89 262.5 184.15 262.5 169.25C262.5 158.62 271.12 150 281.75 150C296.69 150 334.02 150 393.75 150L393.75 93.75L271.88 93.75C271.88 93.75 271.88 93.75 271.88 93.75C235.63 93.75 206.25 123.13 206.25 159.38C206.25 164.38 206.25 176.87 206.25 196.87C206.25 215.87 206.25 227.74 206.25 232.49C206.25 269.05 235.33 298.97 271.88 300C271.88 300 271.88 300 271.88 300Z"
+              id="dHqnz9l7k"/>
+        <clipPath id="clipa3bsezmOu">
+            <use xlink:href="#dHqnz9l7k" opacity="1"/>
+        </clipPath>
+        <path d="M600 300L600 242.55L468.75 243.75L468.75 0L412.5 0L412.5 300L600 300Z" id="cJOWZCjMl"/>
+    </defs>
+    <g>
+        <g>
+            <g>
+                <g>
+                    <use xlink:href="#hwwlH5Fey" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="1"
+                         stroke-opacity="1"/>
+                </g>
+            </g>
+            <g>
+                <use xlink:href="#a15G7w8aJT" opacity="1" fill="#f36717" fill-opacity="1"/>
+                <g clip-path="url(#clipb7viKLKZm)">
+                    <use xlink:href="#a15G7w8aJT" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="0"
+                         stroke-opacity="1"/>
+                </g>
+            </g>
+            <g>
+                <use xlink:href="#c6uHK6ttw" opacity="1" fill="#f36717" fill-opacity="1"/>
+                <g>
+                    <use xlink:href="#c6uHK6ttw" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="0"
+                         stroke-opacity="1"/>
+                </g>
+            </g>
+            <g>
+                <use xlink:href="#dHqnz9l7k" opacity="1" fill="#f36717" fill-opacity="1"/>
+                <g clip-path="url(#clipa3bsezmOu)">
+                    <use xlink:href="#dHqnz9l7k" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="0"
+                         stroke-opacity="1"/>
+                </g>
+            </g>
+            <g>
+                <use xlink:href="#cJOWZCjMl" opacity="1" fill="#f36717" fill-opacity="1"/>
+                <g>
+                    <use xlink:href="#cJOWZCjMl" opacity="1" fill-opacity="0" stroke="#000000" stroke-width="0"
+                         stroke-opacity="1"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

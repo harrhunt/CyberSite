@@ -1,0 +1,44 @@
+@import variables
+
+@use "sass:math"
+
+@mixin center-non-flex($position)
+  position: $position
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)
+
+@mixin transition($transitions...)
+  -webkit-transition: $transitions
+  -moz-transition: $transitions
+  -o-transition: $transitions
+  transition: $transitions
+
+@mixin flex-box($justify, $align, $items:initial, $wrap:wrap)
+  display: flex
+  justify-content: $justify
+  align-content: $align
+  align-items: $items
+  flex-wrap: $wrap
+
+@mixin margin-top-bottom($top, $bot)
+  margin-top: $top
+  margin-bottom: $bot
+
+@mixin btn($color, $size, $size-type:1rem)
+  text-align: center
+  cursor: pointer
+  margin: ($size / 3 * $size-type)
+  padding: ($size / 3 * $size-type)
+  font-size: $size * $size-type
+  font-family: $font-stack
+  background: $color
+  @if lightness($color) > 40%
+    color: $black
+  @else
+    color: $white
+  border-radius: 5px
+  border: 0 solid transparent
+  @include transition(background 0.5s ease)
+  &:hover
+    background: darken($color, 15%)
