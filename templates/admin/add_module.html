@@ -1,0 +1,32 @@
+{% extends "admin/base.html" %}
+{% block meta %}
+    {{ super() }}
+    <meta name="description"
+          content="Admin page for uploading new modules to the repository">
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    {#    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/contribute.css') }}">#}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/dropzone.min.css') }}">
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='scripts/dropzone.min.js') }}" type="text/javascript"></script>
+{% endblock %}
+{% block content %}
+    <header class="banner">
+    </header>
+    <main class="home-content-container">
+        <form class="dropzone" action="/upload" method="POST" autocomplete="off">
+            <div class="fallback">
+                <input name="file" type="file" multiple>
+            </div>
+        </form>
+    </main>
+    <button type="submit" class="btn-submit" onclick="uploader.options.autoProcessQueue = true; uploader.processQueue()">Submit</button>
+    <script>
+        Dropzone.autoDiscover = false;
+        let uploader = new Dropzone(".dropzone", {url: "/upload", autoProcessQueue: false, addRemoveLinks: true, maxFilesize: 4096});
+        uploader.on('queuecomplete', () => uploader.options.autoProcessQueue = false);
+    </script>
+{% endblock %}
