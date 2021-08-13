@@ -33,3 +33,12 @@ Follow the instructions pertaining to your OS
     - `waitress-serve --listen=*:8000 app:app`
         - (*This is for a local instance*)
 8. Navigate to http://localhost:8000/ to view the project
+
+# Future Plans
+
+Here are some of the future plans for this project that will hopefully be completed by whoever takes up the torch
+
+- Completion of the Admin section for adding to and editing the data in the database
+- Better search capabilities (better matching and/or fuzzy search)
+- Breadcrumb navigation style filtering (choose a knowledge area -> choose a knowledge unit)
+- Add pagination to the module search route
