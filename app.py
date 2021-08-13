@@ -42,12 +42,12 @@ def make_shell_context():
 @app.cli.command('initdb')
 def initialize_database():
     db.create_all()
-    admin = User.query.filter(User.username == 'admin').first()
+    new_admin = User.query.filter(User.username == 'admin').first()
     areas = Area.query.all()
     keywords = Keyword.query.all()
-    if not admin:
-        admin = User(username=app.config["ADMIN_USERNAME"], password=generate_password_hash(app.config["ADMIN_PASSWORD"]))
-        db.session.add(admin)
+    if not new_admin:
+        new_admin = User(username=app.config["ADMIN_USERNAME"], password=generate_password_hash(app.config["ADMIN_PASSWORD"]))
+        db.session.add(new_admin)
         db.session.commit()
     if not len(areas):
         load_areas()
@@ -186,9 +186,9 @@ class Link(db.Model):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email('Invalid email'), Length(max=100)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-    remember = BooleanField('remember me')
+    username = StringField('Username', validators=[InputRequired(), Length(max=24)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
+    remember = BooleanField('Remember Me')
 
 
 @login_manager.user_loader
@@ -205,7 +205,7 @@ def index():
 def login():
     form = LoginForm()
     if request.method == 'GET':
-        return render_template("login.html", form=form)
+        return render_template("admin/login.html", form=form)
     elif request.method == 'POST':
         if form.validate_on_submit():
             user = User.query.filter(User.username == form.username.data).first()
@@ -217,8 +217,8 @@ def login():
                 else:
                     return redirect(url_for('admin'))
             flash("Credentials are incorrect", "error")
-            return render_template("login.html", form=form)
-        return render_template("login.html", form=form)
+            return render_template("admin/login.html", form=form)
+        return render_template("admin/login.html", form=form)
 
 
 @app.route('/logout')
@@ -318,6 +318,18 @@ def download_all(module_id):
                 zip_file.writestr(file.name, fp.read())
     zip_bytes.seek(0)
     return send_file(zip_bytes, as_attachment=True, download_name=f"{module_to_zip.name.replace(' ', '_')}.zip")
+
+
+@app.route('/admin')
+@login_required
+def admin():
+    return render_template('admin/index.html')
+
+
+@app.route('/admin/add_module')
+@login_required
+def add_module():
+    return render_template('admin/add_module.html')
 
 
 def load_areas():
