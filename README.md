@@ -34,6 +34,12 @@ Follow the instructions pertaining to your OS
         - (*This is for a local instance*)
 8. Navigate to http://localhost:8000/ to view the project
 
+# Editing Site Theme
+
+All site colors are defined and imported from the `static/styles/sass/_variables.sass` file. To edit the site theme, change out the `$primary-color` and `$secondary-color` variables with the desired hex or RGB code. The rest of the site colors are drawn from the various variables named as shades of black, gray, and white.
+
+The logos are placed in the navbar in the `templates/base.html` file. To change any of the logos, simply add the new logo to the `static/images/` folder and replace the filename of the old logo with the filename of the new logo.
+
 # Future Plans
 
 Here are some of the future plans for this project that will hopefully be completed by whoever takes up the torch
