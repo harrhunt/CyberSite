@@ -1,3 +1,4 @@
+import sqlalchemy.exc
 from flask import Flask, render_template, render_template_string, request, abort, send_from_directory, send_file, redirect, url_for, flash
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_wtf import FlaskForm
@@ -104,9 +105,8 @@ class Module(db.Model):
     )
     files = db.relationship(
         'File',
-        backref=db.backref('modules', lazy='dynamic'),
-        secondary='module_files',
-        lazy='dynamic'
+        backref='module',
+        cascade='all, delete-orphan'
     )
     links = db.relationship(
         'Link',
@@ -129,13 +129,6 @@ module_keywords = db.Table('module_keywords',
                            db.Column('keyword_id', db.Integer(), db.ForeignKey('keywords.id', ondelete='CASCADE'),
                                      primary_key=True)
                            )
-
-module_files = db.Table('module_files',
-                        db.Column('module_id', db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'),
-                                  primary_key=True),
-                        db.Column('file_id', db.Integer(), db.ForeignKey('files.id', ondelete='CASCADE'),
-                                  primary_key=True)
-                        )
 
 module_links = db.Table('module_links',
                         db.Column('module_id', db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'),
@@ -177,6 +170,7 @@ class File(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(200))
     date_added = db.Column(db.Date, default=date.today())
+    module_id = db.Column(db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'))
 
 
 class Link(db.Model):
@@ -273,6 +267,7 @@ def contribute():
 
 
 @app.route('/upload', methods=['POST'])
+@login_required
 def upload():
     uploaded_files = request.files.getlist('file')
     to_save = []
@@ -294,7 +289,7 @@ def upload():
     db.session.commit()
     for file in to_save:
         file[0].save(os.path.join(app.config["UPLOAD_PATH"], str(file[1].id)))
-    return '', 200
+    return json.dumps([file[1].id for file in to_save]), 200
 
 
 @app.route('/download/<file_id>')
@@ -326,10 +321,42 @@ def admin():
     return render_template('admin/index.html')
 
 
-@app.route('/admin/add_module')
+@app.route('/admin/add_module', methods=['GET', 'POST'])
 @login_required
 def add_module():
-    return render_template('admin/add_module.html')
+    if request.method == 'GET':
+        keywords = Keyword.query.all()
+        areas = Area.query.all()
+        return render_template('admin/add_module.html', keywords=keywords, areas=areas)
+    elif request.method == 'POST':
+        params = request.get_json()
+        files = File.query.filter(File.id.in_(params["file_ids"])).all()
+        print(files)
+        keywords = Keyword.query.filter(Keyword.id.in_(params["keyword_ids"])).all()
+        print(keywords)
+        units = Unit.query.filter(Unit.id.in_(params["unit_ids"])).all()
+        print(units)
+        links = []
+        for url in params["links"].split():
+            link = Link.query.filter(Link.url == url).first()
+            if not link:
+                link = Link(url=url)
+                db.session.add(link)
+            links.append(link)
+        db.session.commit()
+        print(links)
+        new_module = Module(name=params["name"], author=params["author"], description=params["description"],
+                            notes=params["notes"], units=units, files=files, keywords=keywords, links=links)
+        try:
+            db.session.add(new_module)
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as err:
+            db.session.rollback()
+            for file in files:
+                db.session.delete(file)
+                db.session.commit()
+            return {"code": 500, "data": "", "msg": err.orig.args}
+        return {"code": 200, "data": "", "msg": "OK"}
 
 
 def load_areas():
