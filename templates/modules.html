@@ -46,9 +46,12 @@
                     </div>
                 </div>
                 <div class="area-container">
-                    <div class="area">{{ module.units[0].area.name }}</div>
+                    <div class="area">{{ module.units[0].area.name if module.units.all()|length > 0 else '' }}</div>
                 </div>
             </div>
         {% endfor %}
     </main>
+    <script>
+        $('.unit-container, .keyword-container').each((index, element) => {if (element.scrollHeight !== element.clientHeight) $('<p>...</p>').css({'position': 'absolute', 'right': '10px', 'top': '-50%', 'transform': 'translateY(10%)', 'font-size': '1.2rem', 'font-weight': 'bold'}).appendTo(element)});
+    </script>
 {% endblock %}
