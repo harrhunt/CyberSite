@@ -20,7 +20,7 @@ def fill_with_fake(fake_auk=True):
             load_areas()
         if not len(keywords):
             load_keywords()
-    random_files(100)
+    random_files(300)
     random_urls(120)
     random_modules(100)
 
@@ -28,7 +28,7 @@ def fill_with_fake(fake_auk=True):
 def random_modules(n):
     areas = Area.query.all()
     keywords = Keyword.query.all()
-    files = File.query.all()
+    files = set(File.query.all())
     links = Link.query.all()
     for i in range(n):
         new_module = Module(name=fake.catch_phrase(), author=fake.name(), description=fake.paragraph(nb_sentences=4), date_added=fake.date_between_dates(date.fromisoformat('2018-01-01'), date.fromisoformat('2019-12-31')), date_updated=fake.date_between_dates(date.fromisoformat('2020-01-01'), date.today()) if fake.random_int(min=0, max=1) else null())
@@ -37,14 +37,16 @@ def random_modules(n):
     modules = Module.query.all()
     for module in modules:
         chosen_area = fake.random_element(areas)
-        chosen_units = list(set([fake.random_element(chosen_area.units) for j in range(fake.random_int(min=1, max=2))]))
-        chosen_keywords = list(set([fake.random_element(keywords) for j in range(fake.random_int(min=2, max=4))]))
-        chosen_files = list(set([fake.random_element(files) for j in range(fake.random_int(min=1, max=3))]))
-        chosen_links = list(set([fake.random_element(links) for j in range(fake.random_int(min=2, max=5))]))
+        chosen_units = list(set([fake.random_element(chosen_area.units) for _ in range(fake.random_int(min=1, max=2))]))
+        chosen_keywords = list(set([fake.random_element(keywords) for _ in range(fake.random_int(min=2, max=4))]))
+        chosen_files = list(set([fake.random_element(files) for _ in range(fake.random_int(min=1, max=3))]))
+        chosen_links = list(set([fake.random_element(links) for _ in range(fake.random_int(min=2, max=5))]))
         module.units = chosen_units
         module.keywords = chosen_keywords
         module.files = chosen_files
         module.links = chosen_links
+        for file in chosen_files:
+            files.remove(file)
         db.session.commit()
 
 
