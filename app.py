@@ -364,6 +364,80 @@ def add_module():
         return {"code": 200, "data": "", "msg": "OK"}
 
 
+@app.route('/admin/edit_module', methods=['GET'])
+@login_required
+def edit():
+    if request.method == 'GET':
+        search_term = request.args.get('search')
+        area_term = request.args.get('area')
+        unit_term = request.args.get('unit')
+        keyword_term = request.args.get('keyword')
+        modules_query = Module.query
+        if not modules_query.all():
+            return render_template("modules.html")
+        if area_term and area_term != '':
+            modules_query = modules_query.filter(Module.units.any(Unit.area.has(Area.name == area_term)))
+        if unit_term and unit_term != '':
+            modules_query = modules_query.filter(Module.units.any(Unit.name == unit_term))
+        if keyword_term and keyword_term != '':
+            modules_query = modules_query.filter(Module.keywords.any(Keyword.name == keyword_term))
+        if search_term and search_term != '':
+            modules_query = Module.query.filter(or_(
+                Module.name.ilike(f'%{search_term}%'),
+                Module.units.any(or_(
+                    Unit.name.ilike(f'%{search_term}%'),
+                    Unit.area.has(Area.name.ilike(f'%{search_term}%'))
+                )),
+                Module.keywords.any(or_(
+                    Keyword.name.ilike(f'%{search_term}%'),
+                    Keyword.acronym.ilike(f'%{search_term}%')
+                )),
+                Module.author.ilike(f'%{search_term}%')
+            ))
+        return render_template("admin/modules.html", modules=modules_query.order_by(Module.date_updated.desc(),
+                                                                                    Module.date_added.desc()).all(),
+                               search=search_term)
+
+
+@app.route('/admin/edit_module/<module_id>', methods=['GET', 'POST'])
+@login_required
+def edit_module(module_id):
+    if request.method == 'GET':
+        module_to_edit = Module.query.filter(Module.id == module_id).first()
+        keywords = Keyword.query.all()
+        areas = Area.query.all()
+        return render_template('admin/edit_module.html', keywords=keywords, areas=areas, module=module_to_edit)
+    elif request.method == 'POST':
+        params = request.get_json()
+        files = File.query.filter(File.id.in_(params["file_ids"])).all()
+        print(files)
+        keywords = Keyword.query.filter(Keyword.id.in_(params["keyword_ids"])).all()
+        print(keywords)
+        units = Unit.query.filter(Unit.id.in_(params["unit_ids"])).all()
+        print(units)
+        links = []
+        for url in params["links"].split():
+            link = Link.query.filter(Link.url == url).first()
+            if not link:
+                link = Link(url=url)
+                db.session.add(link)
+            links.append(link)
+        db.session.commit()
+        print(links)
+        new_module = Module(name=params["name"], author=params["author"], description=params["description"],
+                            notes=params["notes"], units=units, files=files, keywords=keywords, links=links)
+        try:
+            db.session.add(new_module)
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as err:
+            db.session.rollback()
+            for file in files:
+                db.session.delete(file)
+                db.session.commit()
+            return {"code": 500, "data": "", "msg": err.orig.args}
+        return {"code": 200, "data": "", "msg": "OK"}
+
+
 def load_areas():
     with open(".data/database/area_units_edited.json", "r") as file:
         areas = json.load(file)
