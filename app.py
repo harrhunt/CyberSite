@@ -1,5 +1,6 @@
 import sqlalchemy.exc
-from flask import Flask, render_template, render_template_string, request, abort, send_from_directory, send_file, redirect, url_for, flash
+from flask import Flask, render_template, render_template_string, request, abort, send_from_directory, send_file, \
+    redirect, url_for, flash
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
@@ -47,7 +48,8 @@ def initialize_database():
     areas = Area.query.all()
     keywords = Keyword.query.all()
     if not new_admin:
-        new_admin = User(username=app.config["ADMIN_USERNAME"], password=generate_password_hash(app.config["ADMIN_PASSWORD"]))
+        new_admin = User(username=app.config["ADMIN_USERNAME"],
+                         password=generate_password_hash(app.config["ADMIN_PASSWORD"]))
         db.session.add(new_admin)
         db.session.commit()
     if not len(areas):
@@ -258,7 +260,9 @@ def modules():
             )),
             Module.author.ilike(f'%{search_term}%')
         ))
-    return render_template("modules.html", modules=modules_query.order_by(Module.date_updated.desc(), Module.date_added.desc()).all(), search=search_term)
+    return render_template("modules.html",
+                           modules=modules_query.order_by(Module.date_updated.desc(), Module.date_added.desc()).all(),
+                           search=search_term)
 
 
 @app.route('/contribute')
@@ -297,7 +301,8 @@ def download(file_id):
     file_to_download = File.query.filter(File.id == file_id).first()
     if not file_to_download:
         abort(404)
-    return send_from_directory(app.config["UPLOAD_PATH"], str(file_to_download.id), as_attachment=True, download_name=file_to_download.name)
+    return send_from_directory(app.config["UPLOAD_PATH"], str(file_to_download.id), as_attachment=True,
+                               download_name=file_to_download.name)
 
 
 @app.route('/download_all/<module_id>')
