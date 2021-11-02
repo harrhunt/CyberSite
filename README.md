@@ -33,3 +33,8 @@ Follow the instructions pertaining to your OS
     - `waitress-serve --listen=*:8000 app:app`
         - (*This is for a local instance*)
 8. Navigate to http://localhost:8000/ to view the project
+
+## TODO
+- Add ability to select and edit modules
+- Add ability to delete modules
+- Fix wrapping of long file names on file section
