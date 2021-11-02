@@ -29,7 +29,7 @@ Follow the instructions pertaining to your OS
     - `env\Scripts\activate.bat`
 6. Install the dependencies
     - `pip install -r win-requirements.txt`
-7. While still in the virtual environment, start the Flask app with Gunicorn 
+7. While still in the virtual environment, start the Flask app with Waitress 
     - `waitress-serve --listen=*:8000 app:app`
         - (*This is for a local instance*)
 8. Navigate to http://localhost:8000/ to view the project
