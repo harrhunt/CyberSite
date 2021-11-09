@@ -261,7 +261,7 @@ def modules():
             Module.author.ilike(f'%{search_term}%')
         ))
     return render_template("modules.html",
-                           modules=modules_query.order_by(Module.date_updated.desc(), Module.date_added.desc()).all(),
+                           modules=modules_query.order_by(Module.date_added.desc()).all(),
                            search=search_term)
 
 
@@ -394,8 +394,7 @@ def edit():
                 )),
                 Module.author.ilike(f'%{search_term}%')
             ))
-        return render_template("admin/modules.html", modules=modules_query.order_by(Module.date_updated.desc(),
-                                                                                    Module.date_added.desc()).all(),
+        return render_template("admin/modules.html", modules=modules_query.order_by(Module.date_added.desc()).all(),
                                search=search_term)
 
 
