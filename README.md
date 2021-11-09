@@ -37,4 +37,6 @@ Follow the instructions pertaining to your OS
 ## TODO
 - Add ability to select and edit modules
 - Add ability to delete modules
-- Fix wrapping of long file names on file section
+- ~~Fix wrapping of long file names on file section~~
+- Fix search on admin edit, so it doesn't redirect to regular module search
+- Fix order by of modules when querying from the database
