@@ -10,19 +10,22 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/admin/base.css') }}">
 {% endblock %}
 {% block navbar %}
-    <div class="links">
+    <div class="nav-col1">
         {% if current_user.is_authenticated %}
             <a href="/admin/add_module">Add Module</a>
             <a href="/admin/edit_module">Edit Data</a>
         {% endif %}
     </div>
-    <a class="isu-logo-container" href="https://isu.edu/"><img class="isu-logo" alt="Idaho State University Logo"
-                                                               src="{{ url_for('static', filename='images/ISU-stacked.svg') }}"></a>
-    {% if current_user.is_anonymous %}
-        <a href="/login">Login</a>
-    {% else %}
-        <a href="/logout">Logout</a>
-    {% endif %}
+    <a class="nav-col2" href="https://isu.edu/"><img class="isu-logo" alt="Idaho State University Logo"
+                                                     src="{{ url_for('static', filename='images/ISU-stacked.svg') }}"></a>
+
+    <div class="nav-col3">
+        {% if current_user.is_anonymous %}
+            <a href="/login">Login</a>
+        {% else %}
+            <a href="/logout">Logout</a>
+        {% endif %}
+    </div>
 
 {% endblock %}
 {% block content %}
