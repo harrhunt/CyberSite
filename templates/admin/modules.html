@@ -14,7 +14,7 @@
 {% endblock %}
 {% block content %}
     <div class="sticky-search-container">
-        <form class="search-container" action="/modules" method="GET" autocomplete="off">
+        <form class="search-container" action="/admin/edit_module" method="GET" autocomplete="off">
             <label for="search"></label><input type="search" id="search" name="search"
                                                placeholder="Search by author, title, keyword..."
                                                value="{{ search if search else '' }}"
