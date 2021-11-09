@@ -6,9 +6,9 @@ $(document).ready(function () {
                 location.href = `/admin/edit_module/${target.attr("data-id")}`;
             }
         } else if (target.is(".unit") || target.is(".area")) {
-            location.href = `/admin/modules?${target.attr('class').split(/\s+/)[0]}=${target.text()}`;
+            location.href = `/admin/edit_module?${target.attr('class').split(/\s+/)[0]}=${target.text()}`;
         } else if (target.is(".keyword")) {
-            location.href = `/admin/modules?${target.attr('class').split(/\s+/)[0]}=${target.children(".keyword-name").text()}`;
+            location.href = `/admin/edit_module?${target.attr('class').split(/\s+/)[0]}=${target.children(".keyword-name").text()}`;
         }
     });
 });
