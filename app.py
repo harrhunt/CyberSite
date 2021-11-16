@@ -437,6 +437,25 @@ def edit_module(module_id):
         return {"code": 200, "data": "", "msg": "OK"}
 
 
+@app.route('/admin/delete', methods=['POST'])
+@login_required
+def delete():
+    params = request.get_json()
+    if "type" in params and "id" in params:
+        to_delete = None
+        object_type = params["type"]
+        object_id = params["id"]
+        if object_type == "file":
+            to_delete = File.query.filter(File.id == object_id).first()
+        if to_delete:
+            db.session.delete(to_delete)
+            db.session.commit()
+            return {"code": 200, "message": f"Success! {object_type.capitalize()} deleted", "data": ""}
+        else:
+            return {"code": 500, "message": f"Error! Either the type or id does not exist", "data": ""}
+    return {"code": 500, "message": f"Something went wrong!", "data": ""}
+
+
 def load_areas():
     with open(".data/database/area_units_edited.json", "r") as file:
         areas = json.load(file)
