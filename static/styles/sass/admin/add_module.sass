@@ -1,0 +1,83 @@
+@import ../variables
+@import ../mixins
+@import ../placeholders
+
+.module-container
+  @include flex-box(center, center, center)
+  min-height: 80vh
+  width: 100%
+
+.btn-add-keywords, .btn-add-units
+  @include btn($secondary-color, 1.2, 1rem)
+
+.keyword-overlay-container, .area-overlay-container
+  display: none
+  position: fixed
+  top: 0
+  left: 0
+  width: 100vw
+  height: 100vh
+  z-index: 1002
+  background: adjust-color($dark-gray, $alpha: -0.33)
+
+.keyword-container, .area-container
+  @extend %no-select
+  //@include flex-box(center, flex-start, center)
+  position: fixed
+  left: 50%
+  top: 50%
+  transform: translate(-50%, -50%)
+  width: 80%
+  height: 80%
+  overflow-y: scroll
+  margin: 0 auto
+  padding: 50px
+  background: $white
+
+.area
+  font-size: 1.2rem
+  font-weight: bold
+  border-bottom: 2px solid $almost-black
+
+.unit-container
+  margin: 5px 0 25px 0
+
+.name-container, .author-container, .description-container, .notes-container, .links-container
+  @include flex-box(center, center, center)
+  width: 100%
+  label
+    @include flex-box(space-between, center, center)
+    width: clamp(200px, 40%, 400px)
+    font-size: 1.2rem
+    margin: 5px 0
+
+  input
+    font-size: 1.2rem
+
+.dropzone-container
+  @include flex-box(center, center, center)
+  width: 100%
+
+.dropzone
+  margin: 15px 45px
+
+.keyword, .unit
+  margin: 10px
+  padding: 4px 8px
+  background: $light-gray
+  border-radius: 10px
+  display: inline-block
+
+.search-container
+  width: 100%
+
+.selected
+  background: $primary-color
+
+.btn-submit-container
+  @include flex-box(center, center, center)
+  width: 100%
+  margin: 25px 0
+
+.btn-submit
+  @include btn($primary-color, 1.2, 1rem)

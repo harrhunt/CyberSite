@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block meta %}
+    {{ super() }}
+    <meta name="description"
+          content="Login for admin section of the I2CL repository">
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/admin/login.css') }}">
+{% endblock %}
+{% block scripts %}
+{% endblock %}
+{% block content %}
+    <header>
+        <div class="title">Login</div>
+    </header>
+    <main>
+        <form class="login" action="/login" method="POST">
+            <div class="form-element">
+            {{ form.hidden_tag() }}
+            {{ form.username.label }}
+            {{ form.username }}
+            {% for error in form.username.errors %}
+                <span class="form-error">{{ error }}</span>
+            {% endfor %}
+            </div>
+
+            <div class="form-element">
+                {{ form.password.label }}
+                {{ form.password }}
+                {% for error in form.password.errors %}
+                    <span class="form-error">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <button class="btn-login" type="submit">Login</button>
+        </form>
+    </main>
+{% endblock %}

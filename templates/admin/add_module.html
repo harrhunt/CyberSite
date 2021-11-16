@@ -1,0 +1,174 @@
+{% extends "admin/base.html" %}
+{% block meta %}
+    {{ super() }}
+    <meta name="description"
+          content="Admin page for uploading new modules to the repository">
+{% endblock %}
+{% block styles %}
+    {{ super() }}
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/admin/add_module.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles/dropzone.min.css') }}">
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='scripts/dropzone.min.js') }}" type="text/javascript"></script>
+{% endblock %}
+{% block content %}
+    <header class="banner">
+    </header>
+    <main class="module-container">
+        <div class="name-container">
+            <label for="name">Name: <input type="text" id="name"/></label>
+        </div>
+        <div class="author-container">
+            <label for="author">Author: <input type="text" id="author"/></label>
+        </div>
+        <div class="description-container">
+            <label for="description">Description: <textarea id="description"></textarea></label>
+        </div>
+        <div class="notes-container">
+            <label for="notes">Notes: <textarea id="notes"></textarea></label>
+        </div>
+        <div class="links-container">
+            <label for="links">Links: <textarea id="links"></textarea></label>
+        </div>
+        <div class="dropzone-container">
+            <form class="dropzone" action="/upload" method="POST" autocomplete="off">
+                <div class="fallback">
+                    <input name="file" type="file" multiple>
+                </div>
+            </form>
+        </div>
+        <div class="btn-add-keywords">Add Keywords</div>
+        <div class="btn-add-units">Add Units</div>
+        <div class="keyword-overlay-container">
+            <div class="keyword-container">
+                <div class="search-container">
+                    <label for="keyword-search">Search: </label><input id="keyword-search" type="search">
+                </div>
+                {% for keyword in keywords %}
+                    <div class="keyword" data-id="{{ keyword.id }}">{{ keyword.name }} {% if keyword.acronym %}({{ keyword.acronym }}){% endif %}</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="area-overlay-container">
+            <div class="area-container">
+                {% for area in areas %}
+                    <div class="area" data-id="{{ area.id }}">{{ area.name }}</div>
+                    <div class="unit-container">
+                        {% for unit in area.units %}
+                            <div class="unit" data-id="{{ unit.id }}">{{ unit.name }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="btn-submit-container">
+            <button type="submit" class="btn-submit"
+                    onclick="uploader.options.autoProcessQueue = true; uploader.processQueue();">Submit
+            </button>
+        </div>
+    </main>
+
+    <script>
+        let post_settings = {
+            "url": location.pathname,
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": {}
+        };
+        let file_ids = [];
+        Dropzone.autoDiscover = false;
+        let uploader = new Dropzone(".dropzone", {
+            url: "/upload",
+            autoProcessQueue: false,
+            addRemoveLinks: true,
+            maxFilesize: 4096
+        });
+        uploader.on('queuecomplete', () => {
+            uploader.options.autoProcessQueue = false;
+            upload();
+        });
+        uploader.on('success', function () {
+            {#console.log(arguments);#}
+            let ids = JSON.parse(arguments[1]);
+            console.log(ids);
+            ids.forEach(id => file_ids.push(id));
+        });
+        uploader.on('complete', function(file) {
+            uploader.removeFile(file);
+        })
+
+        let keywordOverlay = $(".keyword-overlay-container");
+        let areaOverlay = $(".area-overlay-container");
+        let keywords = $(".keyword");
+
+        $(".btn-add-keywords").on('click', (e) => keywordOverlay.show());
+        $(".btn-add-units").on('click', (e) => areaOverlay.show());
+
+        $("#keyword-search").on('keyup', function (e) {
+            let searchTerm = $(this).val().toLowerCase();
+            console.log(searchTerm);
+            keywords.each((index, element) => {
+                let keyword = $(element);
+                if (keyword.text().toLowerCase().indexOf(searchTerm) === -1) keyword.hide();
+                else keyword.show();
+            });
+        });
+
+        keywordOverlay.on('click', function (e) {
+            let target = $(e.target);
+            if (target.is(keywordOverlay)) {
+                target.hide();
+            } else if (target.is(".keyword")) {
+                target.toggleClass("selected")
+            }
+            e.preventDefault();
+            e.stopPropagation();
+        });
+        areaOverlay.on('click', function (e) {
+            let target = $(e.target);
+            if (target.is(areaOverlay)) {
+                target.hide();
+            } else if (target.is(".unit")) {
+                target.toggleClass("selected")
+            }
+        });
+
+        function upload() {
+            let name = $("#name").val();
+            let author = $("#author").val();
+            let selected_keywords = $(".keyword.selected");
+            let keyword_ids = []
+            selected_keywords.each((index, element) => keyword_ids.push(parseInt($(element).attr('data-id'))));
+            let selected_units = $(".unit.selected");
+            let unit_ids = []
+            selected_units.each((index, element) => unit_ids.push(parseInt($(element).attr('data-id'))));
+            let description = $("#description").val();
+            let notes = $("#notes").val();
+            let links = $("#links").val();
+            post_settings["data"] = JSON.stringify({
+                "name": name,
+                "author": author,
+                "description": description,
+                "notes": notes,
+                "file_ids": file_ids,
+                "keyword_ids": keyword_ids,
+                "unit_ids": unit_ids,
+                "links": links
+            });
+            console.log(post_settings);
+            $.ajax(post_settings).done(function (response) {
+                if (response["code"] === 500) {
+                    file_ids = [];
+                    alert(response["msg"]);
+                } else if (response["code"] === 200) {
+                    location.href = "/admin/edit_module";
+                }
+            });
+        }
+    </script>
+{% endblock %}

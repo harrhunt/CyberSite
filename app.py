@@ -1,4 +1,6 @@
-from flask import Flask, render_template, render_template_string, request, abort, send_from_directory, send_file, redirect, url_for, flash
+import sqlalchemy.exc
+from flask import Flask, render_template, render_template_string, request, abort, send_from_directory, send_file, \
+    redirect, url_for, flash
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
@@ -42,12 +44,13 @@ def make_shell_context():
 @app.cli.command('initdb')
 def initialize_database():
     db.create_all()
-    admin = User.query.filter(User.username == 'admin').first()
+    new_admin = User.query.filter(User.username == 'admin').first()
     areas = Area.query.all()
     keywords = Keyword.query.all()
-    if not admin:
-        admin = User(username=app.config["ADMIN_USERNAME"], password=generate_password_hash(app.config["ADMIN_PASSWORD"]))
-        db.session.add(admin)
+    if not new_admin:
+        new_admin = User(username=app.config["ADMIN_USERNAME"],
+                         password=generate_password_hash(app.config["ADMIN_PASSWORD"]))
+        db.session.add(new_admin)
         db.session.commit()
     if not len(areas):
         load_areas()
@@ -104,9 +107,8 @@ class Module(db.Model):
     )
     files = db.relationship(
         'File',
-        backref=db.backref('modules', lazy='dynamic'),
-        secondary='module_files',
-        lazy='dynamic'
+        backref='module',
+        cascade='all, delete-orphan'
     )
     links = db.relationship(
         'Link',
@@ -129,13 +131,6 @@ module_keywords = db.Table('module_keywords',
                            db.Column('keyword_id', db.Integer(), db.ForeignKey('keywords.id', ondelete='CASCADE'),
                                      primary_key=True)
                            )
-
-module_files = db.Table('module_files',
-                        db.Column('module_id', db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'),
-                                  primary_key=True),
-                        db.Column('file_id', db.Integer(), db.ForeignKey('files.id', ondelete='CASCADE'),
-                                  primary_key=True)
-                        )
 
 module_links = db.Table('module_links',
                         db.Column('module_id', db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'),
@@ -177,6 +172,7 @@ class File(db.Model):
     id = db.Column(db.Integer(), primary_key=True)
     name = db.Column(db.String(200))
     date_added = db.Column(db.Date, default=date.today())
+    module_id = db.Column(db.Integer(), db.ForeignKey('modules.id', ondelete='CASCADE'))
 
 
 class Link(db.Model):
@@ -186,9 +182,9 @@ class Link(db.Model):
 
 
 class LoginForm(FlaskForm):
-    email = StringField('email', validators=[InputRequired(), Email('Invalid email'), Length(max=100)])
-    password = PasswordField('password', validators=[InputRequired(), Length(min=8, max=80)])
-    remember = BooleanField('remember me')
+    username = StringField('Username', validators=[InputRequired(), Length(max=24)])
+    password = PasswordField('Password', validators=[InputRequired(), Length(min=8, max=80)])
+    remember = BooleanField('Remember Me')
 
 
 @login_manager.user_loader
@@ -205,7 +201,7 @@ def index():
 def login():
     form = LoginForm()
     if request.method == 'GET':
-        return render_template("login.html", form=form)
+        return render_template("admin/login.html", form=form)
     elif request.method == 'POST':
         if form.validate_on_submit():
             user = User.query.filter(User.username == form.username.data).first()
@@ -217,8 +213,8 @@ def login():
                 else:
                     return redirect(url_for('admin'))
             flash("Credentials are incorrect", "error")
-            return render_template("login.html", form=form)
-        return render_template("login.html", form=form)
+            return render_template("admin/login.html", form=form)
+        return render_template("admin/login.html", form=form)
 
 
 @app.route('/logout')
@@ -264,7 +260,9 @@ def modules():
             )),
             Module.author.ilike(f'%{search_term}%')
         ))
-    return render_template("modules.html", modules=modules_query.order_by(Module.date_updated.desc(), Module.date_added.desc()).all(), search=search_term)
+    return render_template("modules.html",
+                           modules=modules_query.order_by(Module.date_added.desc()).all(),
+                           search=search_term)
 
 
 @app.route('/contribute')
@@ -273,6 +271,7 @@ def contribute():
 
 
 @app.route('/upload', methods=['POST'])
+@login_required
 def upload():
     uploaded_files = request.files.getlist('file')
     to_save = []
@@ -294,7 +293,7 @@ def upload():
     db.session.commit()
     for file in to_save:
         file[0].save(os.path.join(app.config["UPLOAD_PATH"], str(file[1].id)))
-    return '', 200
+    return json.dumps([file[1].id for file in to_save]), 200
 
 
 @app.route('/download/<file_id>')
@@ -302,7 +301,8 @@ def download(file_id):
     file_to_download = File.query.filter(File.id == file_id).first()
     if not file_to_download:
         abort(404)
-    return send_from_directory(app.config["UPLOAD_PATH"], str(file_to_download.id), as_attachment=True, download_name=file_to_download.name)
+    return send_from_directory(app.config["UPLOAD_PATH"], str(file_to_download.id), as_attachment=True,
+                               download_name=file_to_download.name)
 
 
 @app.route('/download_all/<module_id>')
@@ -318,6 +318,123 @@ def download_all(module_id):
                 zip_file.writestr(file.name, fp.read())
     zip_bytes.seek(0)
     return send_file(zip_bytes, as_attachment=True, download_name=f"{module_to_zip.name.replace(' ', '_')}.zip")
+
+
+@app.route('/admin')
+@login_required
+def admin():
+    return render_template('admin/index.html')
+
+
+@app.route('/admin/add_module', methods=['GET', 'POST'])
+@login_required
+def add_module():
+    if request.method == 'GET':
+        keywords = Keyword.query.all()
+        areas = Area.query.all()
+        return render_template('admin/add_module.html', keywords=keywords, areas=areas)
+    elif request.method == 'POST':
+        params = request.get_json()
+        files = File.query.filter(File.id.in_(params["file_ids"])).all()
+        print(files)
+        keywords = Keyword.query.filter(Keyword.id.in_(params["keyword_ids"])).all()
+        print(keywords)
+        units = Unit.query.filter(Unit.id.in_(params["unit_ids"])).all()
+        print(units)
+        links = []
+        for url in params["links"].split():
+            link = Link.query.filter(Link.url == url).first()
+            if not link:
+                link = Link(url=url)
+                db.session.add(link)
+            links.append(link)
+        db.session.commit()
+        print(links)
+        new_module = Module(name=params["name"], author=params["author"], description=params["description"],
+                            notes=params["notes"], units=units, files=files, keywords=keywords, links=links)
+        try:
+            db.session.add(new_module)
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as err:
+            db.session.rollback()
+            for file in files:
+                db.session.delete(file)
+                db.session.commit()
+            return {"code": 500, "data": "", "msg": err.orig.args}
+        return {"code": 200, "data": "", "msg": "OK"}
+
+
+@app.route('/admin/edit_module', methods=['GET'])
+@login_required
+def edit():
+    if request.method == 'GET':
+        search_term = request.args.get('search')
+        area_term = request.args.get('area')
+        unit_term = request.args.get('unit')
+        keyword_term = request.args.get('keyword')
+        modules_query = Module.query
+        if not modules_query.all():
+            return render_template("modules.html")
+        if area_term and area_term != '':
+            modules_query = modules_query.filter(Module.units.any(Unit.area.has(Area.name == area_term)))
+        if unit_term and unit_term != '':
+            modules_query = modules_query.filter(Module.units.any(Unit.name == unit_term))
+        if keyword_term and keyword_term != '':
+            modules_query = modules_query.filter(Module.keywords.any(Keyword.name == keyword_term))
+        if search_term and search_term != '':
+            modules_query = Module.query.filter(or_(
+                Module.name.ilike(f'%{search_term}%'),
+                Module.units.any(or_(
+                    Unit.name.ilike(f'%{search_term}%'),
+                    Unit.area.has(Area.name.ilike(f'%{search_term}%'))
+                )),
+                Module.keywords.any(or_(
+                    Keyword.name.ilike(f'%{search_term}%'),
+                    Keyword.acronym.ilike(f'%{search_term}%')
+                )),
+                Module.author.ilike(f'%{search_term}%')
+            ))
+        return render_template("admin/modules.html", modules=modules_query.order_by(Module.date_added.desc()).all(),
+                               search=search_term)
+
+
+@app.route('/admin/edit_module/<module_id>', methods=['GET', 'POST'])
+@login_required
+def edit_module(module_id):
+    if request.method == 'GET':
+        module_to_edit = Module.query.filter(Module.id == module_id).first()
+        keywords = Keyword.query.all()
+        areas = Area.query.all()
+        return render_template('admin/edit_module.html', keywords=keywords, areas=areas, module=module_to_edit)
+    elif request.method == 'POST':
+        params = request.get_json()
+        files = File.query.filter(File.id.in_(params["file_ids"])).all()
+        print(files)
+        keywords = Keyword.query.filter(Keyword.id.in_(params["keyword_ids"])).all()
+        print(keywords)
+        units = Unit.query.filter(Unit.id.in_(params["unit_ids"])).all()
+        print(units)
+        links = []
+        for url in params["links"].split():
+            link = Link.query.filter(Link.url == url).first()
+            if not link:
+                link = Link(url=url)
+                db.session.add(link)
+            links.append(link)
+        db.session.commit()
+        print(links)
+        new_module = Module(name=params["name"], author=params["author"], description=params["description"],
+                            notes=params["notes"], units=units, files=files, keywords=keywords, links=links)
+        try:
+            db.session.add(new_module)
+            db.session.commit()
+        except sqlalchemy.exc.IntegrityError as err:
+            db.session.rollback()
+            for file in files:
+                db.session.delete(file)
+                db.session.commit()
+            return {"code": 500, "data": "", "msg": err.orig.args}
+        return {"code": 200, "data": "", "msg": "OK"}
 
 
 def load_areas():

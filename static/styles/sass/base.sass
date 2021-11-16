@@ -21,11 +21,16 @@ body, html
   position: sticky
   top: 0
   left: 0
-  z-index: 10
+  z-index: 1001
   width: 100%
   height: 75px
   background: $white
-  @include flex-box(space-between, center, center)
+  // Grid stuff
+  display: grid
+  grid-template-columns: 1fr 1fr 1fr
+  grid-template-rows: 75px
+  // End Grid Stuff
+  //@include flex-box(space-between, center, center)
   box-shadow: 0 2px 8px adjust-color($dark-gray, $alpha: -0.33)
 
   a
@@ -33,24 +38,29 @@ body, html
     text-decoration: none
     color: $almost-black
     font-size: 1.5rem
-    margin: 0 25px
+    margin: 0 10px
     font-weight: bold
 
-.links
+.nav-col1
+  place-self: center start
   height: 100%
+  margin-left: 20px
   @include flex-box(center, center)
 
 .iicl-logo
   width: 110px
 
-.isu-logo-container
+.nav-col2
+  place-self: center
   margin: 0
   height: 80%
 
+
 .isu-logo
+  position: relative
   height: 100%
 
-#contribute
+.link-button
   font-size: 1.2rem
   border: 2px solid $almost-black
   border-radius: 10px
@@ -61,6 +71,11 @@ body, html
   &:hover
     background: $almost-black
     color: $white
+
+.nav-col3
+  place-self: center end
+  margin-right: 20px
+  @include flex-box(center, center, center)
 
 .search-container
   width: 100%

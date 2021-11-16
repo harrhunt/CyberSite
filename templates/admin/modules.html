@@ -4,13 +4,17 @@
     <meta name="description"
           content="Modules in the ISU Industrial Cyber Security Library based on search results if there are any">
 {% endblock %}
+{% block scripts %}
+    {{ super.super() }}
+     <script src="{{ url_for('static', filename='scripts/tag_search_edit.js') }}" type="text/javascript"></script>
+{% endblock %}
 {% block styles %}
     {{ super() }}
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/modules.css') }}">
 {% endblock %}
 {% block content %}
     <div class="sticky-search-container">
-        <form class="search-container" action="/modules" method="GET" autocomplete="off">
+        <form class="search-container" action="/admin/edit_module" method="GET" autocomplete="off">
             <label for="search"></label><input type="search" id="search" name="search"
                                                placeholder="Search by author, title, keyword..."
                                                value="{{ search if search else '' }}"

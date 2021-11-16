@@ -1,0 +1,25 @@
+@import ../mixins
+@import ../variables
+
+.login
+  @include flex-box(center, center, center)
+  width: 80%
+  background: $white
+  border-radius: 10px
+  padding: 35px
+
+.form-element
+  @include flex-box(center, center, center)
+  width: 100%
+  margin: 20px 0
+
+  label
+    font-size: 1.4rem
+    font-weight: bold
+    margin: 0 10px
+
+  input
+    font-size: 1.2rem
+
+.btn-login
+  @include btn($secondary-color, 1.2)

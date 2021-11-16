@@ -16,18 +16,26 @@
 </head>
 <body>
 <script>let FF_FOUC_FIX</script>
-    <nav class="navbar">
-        {% block navbar %}
-            <div class="links">
-                <a href="/"><img class="iicl-logo" alt="Idaho State University Logo"
-                                 src="{{ url_for('static', filename='images/I2CL_logo.png') }}"></a>
-            </div>
-            <a class="isu-logo-container" href="https://isu.edu/"><img class="isu-logo"
-                                                                       alt="Idaho State University Logo"
-                                                                       src="{{ url_for('static', filename='images/ISU-stacked.svg') }}"></a>
-            <a id="contribute" href="/contribute">Contribute</a>
-        {% endblock %}
-    </nav>
+<nav class="navbar">
+    {% block navbar %}
+        <div class="nav-col1">
+            <a href="/"><img class="iicl-logo" alt="ISU Industrial Cybersecurity Library Logo"
+                             src="{{ url_for('static', filename='images/I2CL_logo.png') }}"></a>
+        </div>
+        <a class="nav-col2" href="https://isu.edu/"><img class="isu-logo"
+                                                         alt="Idaho State University Logo"
+                                                         src="{{ url_for('static', filename='images/ISU-stacked.svg') }}"></a>
+        <div class="nav-col3">
+            {% if current_user.is_authenticated %}
+                <a class="link-button" id="admin" href="/admin">Admin</a>
+                <a class="link-button" id="logout" href="/logout">Logout</a>
+            {% else %}
+                <a class="link-button" id="login" href="/login">Login</a>
+            {% endif %}
+            <a class="link-button" id="contribute" href="/contribute">Contribute</a>
+        </div>
+    {% endblock %}
+</nav>
 {% block content %}
 
 {% endblock %}
