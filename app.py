@@ -1,6 +1,6 @@
 import sqlalchemy.exc
 from flask import Flask, render_template, render_template_string, request, abort, send_from_directory, send_file, \
-    redirect, url_for, flash
+    redirect, url_for, flash, Blueprint
 from flask_login import LoginManager, login_required, UserMixin, login_user, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
@@ -21,10 +21,13 @@ sass.compile(dirname=('static/styles/sass', 'static/styles/css'), output_style='
 
 app = Flask(__name__)
 app.config.from_object(SELECTED_CONFIG)
+
+bp = Blueprint("i2cl", __name__, template_folder='templates', static_folder='static')
+
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = 'login'
+login_manager.login_view = 'i2cl.login'
 
 
 @app.shell_context_processor
@@ -192,12 +195,12 @@ def user_loader(user_id):
     return User.query.get(user_id)
 
 
-@app.route('/')
+@bp.route('/')
 def index():
     return render_template("index.html")
 
 
-@app.route('/login', methods=['GET', 'POST'])
+@bp.route('/login', methods=['GET', 'POST'])
 def login():
     form = LoginForm()
     if request.method == 'GET':
@@ -209,21 +212,21 @@ def login():
                 login_user(user, remember=form.remember.data)
                 next_loc = request.args.get('next')
                 if next_loc:
-                    return redirect(url_for(next_loc))
+                    return redirect(url_for(f'i2cl.{next_loc}'))
                 else:
-                    return redirect(url_for('admin'))
+                    return redirect(url_for('i2cl.admin'))
             flash("Credentials are incorrect", "error")
             return render_template("admin/login.html", form=form)
         return render_template("admin/login.html", form=form)
 
 
-@app.route('/logout')
+@bp.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('i2cl.index'))
 
 
-@app.route('/module/<module_id>')
+@bp.route('/module/<module_id>')
 def module(module_id):
     selected_module = Module.query.filter(Module.id == module_id).first()
     if selected_module:
@@ -232,7 +235,7 @@ def module(module_id):
         return render_template_string("<h1>Module with id {{ module_id }} does not exist</h1>", module_id=module_id)
 
 
-@app.route('/modules')
+@bp.route('/modules')
 def modules():
     search_term = request.args.get('search')
     area_term = request.args.get('area')
@@ -265,12 +268,12 @@ def modules():
                            search=search_term)
 
 
-@app.route('/contribute')
+@bp.route('/contribute')
 def contribute():
     return render_template("contribute.html")
 
 
-@app.route('/upload', methods=['POST'])
+@bp.route('/upload', methods=['POST'])
 @login_required
 def upload():
     uploaded_files = request.files.getlist('file')
@@ -296,7 +299,7 @@ def upload():
     return json.dumps([file[1].id for file in to_save]), 200
 
 
-@app.route('/download/<file_id>')
+@bp.route('/download/<file_id>')
 def download(file_id):
     file_to_download = File.query.filter(File.id == file_id).first()
     if not file_to_download:
@@ -305,7 +308,7 @@ def download(file_id):
                                download_name=file_to_download.name)
 
 
-@app.route('/download_all/<module_id>')
+@bp.route('/download_all/<module_id>')
 def download_all(module_id):
     module_to_zip = Module.query.filter(Module.id == module_id).first()
     if not module_to_zip:
@@ -320,13 +323,13 @@ def download_all(module_id):
     return send_file(zip_bytes, as_attachment=True, download_name=f"{module_to_zip.name.replace(' ', '_')}.zip")
 
 
-@app.route('/admin')
+@bp.route('/admin')
 @login_required
 def admin():
     return render_template('admin/index.html')
 
 
-@app.route('/admin/add_module', methods=['GET', 'POST'])
+@bp.route('/admin/add_module', methods=['GET', 'POST'])
 @login_required
 def add_module():
     if request.method == 'GET':
@@ -364,7 +367,7 @@ def add_module():
         return {"code": 200, "data": "", "msg": "OK"}
 
 
-@app.route('/admin/edit_module', methods=['GET'])
+@bp.route('/admin/edit_module', methods=['GET'])
 @login_required
 def edit():
     if request.method == 'GET':
@@ -398,7 +401,7 @@ def edit():
                                search=search_term)
 
 
-@app.route('/admin/edit_module/<module_id>', methods=['GET', 'POST'])
+@bp.route('/admin/edit_module/<module_id>', methods=['GET', 'POST'])
 @login_required
 def edit_module(module_id):
     if request.method == 'GET':
@@ -461,6 +464,9 @@ def load_keywords():
         new_keyword = Keyword(name=keyword, acronym=keywords[keyword]["acronym"], sources=sources_list)
         db.session.add(new_keyword)
     db.session.commit()
+
+
+app.register_blueprint(bp, url_prefix=app.config["APPLICATION_ROOT"])
 
 
 if __name__ == '__main__':
