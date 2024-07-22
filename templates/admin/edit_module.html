@@ -6,7 +6,6 @@
 {% endblock %}
 {% block styles %}
     {{ super() }}
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles/css/admin/add_module.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles/dropzone.min.css') }}">
 {% endblock %}
 {% block scripts %}
@@ -31,6 +30,11 @@
         </div>
         <div class="links-container">
             <label for="links">Links: <textarea id="links">{% for link in module.links %}{{ link.url }}{{ "\n" }}{% endfor %}</textarea></label>
+        </div>
+        <div class="files-container">
+            {% for file in module.files %}
+                <div id="file-{{ file.id }}"><div class="filename">{{ file.name }}</div><div class="btn-remove-file" onclick="deleteFile({{ file.id }}, '{{ file.name }}')">X</div></div>
+            {% endfor %}
         </div>
         <div class="dropzone-container">
             <form class="dropzone" action="/upload" method="POST" autocomplete="off">
@@ -80,6 +84,31 @@
             },
             "data": {}
         };
+        let delete_setttings = {
+            "url": "/admin/delete",
+            "method": "POST",
+            "timeout": 0,
+            "headers": {
+                "Content-Type": "application/json"
+            },
+            "data": {}
+        };
+        function deleteFile(fileID, fileName) {
+            delete_setttings["data"] = JSON.stringify({
+                "type": "file",
+                "id": fileID
+            });
+            let deleteConfirm = confirm(`Are you sure you want to delete ${fileName}?`);
+            if (deleteConfirm) {
+                $.ajax(delete_setttings).done(function (response) {
+                    alert(response["message"]);
+                    if (response["code"] === 200) {
+                        $(`#file-${fileID}`).remove();
+                    }
+                });
+            }
+
+        }
         let file_ids = [];
         Dropzone.autoDiscover = false;
         let uploader = new Dropzone(".dropzone", {
